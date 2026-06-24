@@ -1,0 +1,15 @@
+/* styles/global.css */
+@font-face {
+  font-family: 'iranYekan';
+  src: url('/fonts/iranYekan.eot') format('eot'),
+       url('/fonts/iranYekan.woff') format('woff'),
+       url('/fonts/iranYekan.svg') format('svg'),
+       url('/fonts/iranyekan.ttf') format('ttf');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+.raychat_frame
+{
+  bottom:64px !important;
+}

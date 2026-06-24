@@ -1,0 +1,48 @@
+/* components/feature/styles/Login.module.css */
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #E5E9ED 0%, #00784a 100%);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  margin-bottom: 40px;
+}
+
+.icon {
+  /* استایل‌های اضافی برای آیکون */
+}
+
+.title {
+  color: #ffffff;
+}
+
+.loginBox {
+  background-color: #afb5bd;
+  border-radius: 12px;
+  padding: 24px;
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.codeInputs {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px; /* فاصله بین ورودی‌ها */
+  width: 100%;
+  margin-bottom: 24px; /* فاصله از دکمه */
+}
+
+.submitButton {
+  /* استایل‌های اضافی برای دکمه */
+}

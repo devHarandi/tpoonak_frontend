@@ -1,0 +1,28 @@
+/* components/styles/SlideButton.module.css */
+.container-btn
+{
+    margin-left: 20px;
+    margin-right: 20px;
+}
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* فاصله بین آیکون و دکمه */
+  border: 1px solid #939393; /* فریم خاکستری */
+  border-radius: 8px;
+  padding: 4px;
+  width: 100%; /* عرض کامل */
+  background-color: transparent;
+}
+
+.icon {
+  color: #fff; /* رنگ آیکون سفید */
+  margin-left: 8px; /* فاصله از دکمه */
+}
+
+.button {
+  background-color: #ebebeb; /* پس‌زمینه خاکستری روشن */
+  border-radius: 6px;
+  padding: 8px 24px;
+  color: #000; /* رنگ متن دکمه */
+}
