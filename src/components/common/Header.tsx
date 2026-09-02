@@ -24,6 +24,8 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
+import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import Image from 'next/image';
 import styles from './styles/Header.module.css';
 import { removeToken } from '@/utils/storage';
@@ -126,13 +128,18 @@ const Header = ({ title }: HeaderProps) => {
   const baseMenuItems: MenuItem[] = [
     { text: 'خانه', id: 'home', icon: <HomeOutlinedIcon />, link: '/home' },
     { text: 'حساب کاربری', id: 'account', icon: <PersonOutlineIcon />, link: '/profile' },
+    { text: 'ویرایش پروفایل', id: 'edit-account', icon: <EditOutlinedIcon />, link: '/editprofile' },
     { text: 'سفارشات من', id: 'orders', icon: <ReceiptLongOutlinedIcon />, link: '/myorders' },
     { text: 'درباره ما', id: 'about', icon: <InfoOutlinedIcon />, link: '/about' },
     { text: 'قوانین و مقررات', id: 'rules', icon: <GavelOutlinedIcon />, link: '/rules' },
   ];
 
-  const adminMenuItems: MenuItem[] = profile?.profile.roles.some((role) => role.name === 'Admin')
+  const hasOperationsAccess = profile?.profile.roles.some(
+    (role) => role.name === 'Admin' || role.name === 'Operator'
+  );
+  const adminMenuItems: MenuItem[] = hasOperationsAccess
     ? [
+        { text: 'پنل عملیات', id: 'operator-panel', icon: <DashboardOutlinedIcon />, link: '/operator' },
         { text: 'گزارش مالی', id: 'financial-report', icon: <AssessmentOutlinedIcon />, link: '/admin/transactions' },
         { text: 'مدیریت کاربران', id: 'user-management', icon: <GroupOutlinedIcon />, link: '/admin/users' },
         { text: 'مدیریت سفارشات', id: 'order-management', icon: <LocalShippingOutlinedIcon />, link: '/admin/orders' },

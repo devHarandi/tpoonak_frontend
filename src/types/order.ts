@@ -81,6 +81,11 @@ export interface GetOrderResponse {
   data: Order;
 }
 
+export interface ManageOrderRequest {
+  status?: string;
+  carrier_id?: number | null;
+}
+
 export interface VehicleType {
   id: number;
   name: string;

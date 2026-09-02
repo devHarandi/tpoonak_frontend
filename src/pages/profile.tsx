@@ -12,7 +12,7 @@ import {
   Avatar,
 } from '@mui/material';
 import { styled, Theme } from '@mui/material/styles';
-import { ExitToApp } from '@mui/icons-material';
+import { EditOutlined, ExitToApp } from '@mui/icons-material';
 import Header from '@/components/common/Header';
 import AppFrame from '@/components/common/AppFrame';
 import CustomBottomNavigation from '@/components/common/CustomBottomNavigation';
@@ -157,6 +157,20 @@ export default function ProfilePage() {
             >
               {profile ? `${profile.profile.first_name} ${profile.profile.last_name} عزیز خوش آمدید` : 'در حال بارگذاری...'}
             </Typography>
+            <Button
+              variant="outlined"
+              onClick={() => router.push('/editprofile')}
+              startIcon={<EditOutlined />}
+              sx={{
+                mt: 1,
+                borderColor: '#08784f',
+                color: '#08784f',
+                fontFamily: 'IranYekan, sans-serif',
+                '&:hover': { borderColor: '#075c3e', backgroundColor: '#e6f4ee' },
+              }}
+            >
+              ویرایش پروفایل
+            </Button>
           </CardContent>
         </ProfileCard>
 

@@ -115,13 +115,13 @@ export default function EditProfilePage() {
       formData.append('last_name', lastName.trim());
       formData.append('customer_type', customerType);
       formData.append('company_name', customerType === 'company' ? companyName.trim() : '');
-      formData.append('mobile', mobile);
       if (profileImageFile) {
         formData.append('profile_image', profileImageFile);
       }
 
       await updateProfile(formData);
-      router.push(isWelcome ? '/home' : '/profile');
+      const isOperator = profile?.profile.roles.some((role) => role.name === 'Operator');
+      router.push(isWelcome ? (isOperator ? '/operator/' : '/home') : '/profile');
     } catch (err: any) {
       setError(err.response?.data?.message || 'خطا در به‌روزرسانی پروفایل');
       setOpenSnackbar(true);
@@ -356,19 +356,14 @@ export default function EditProfilePage() {
             </>
           )}
           <Typography sx={{ mb: 2, fontSize: '14px', fontFamily: 'IranYekan, sans-serif' }}>
-            * موبایل
+            موبایل ورود
           </Typography>
           <TextField
             fullWidth
             label="موبایل"
             variant="outlined"
             value={mobile}
-            onChange={(e) => {
-              const value = e.target.value;
-              if (/^\d*$/.test(value) && value.length <= 11) {
-                setMobile(value);
-              }
-            }}
+            InputProps={{ readOnly: true }}
             disabled={isLoading}
             inputProps={{
               maxLength: 11,
@@ -392,7 +387,11 @@ export default function EditProfilePage() {
               },
             }}
             error={mobile.length > 0 && !/^09\d{9}$/.test(mobile)}
-            helperText={mobile.length > 0 && !/^09\d{9}$/.test(mobile) ? 'شماره موبایل باید 11 رقم و با 09 شروع شود' : ''}
+            helperText={
+              mobile.length > 0 && !/^09\d{9}$/.test(mobile)
+                ? 'شماره موبایل باید 11 رقم و با 09 شروع شود'
+                : 'این شماره برای ورود به حساب استفاده می‌شود؛ برای تغییر آن با پشتیبانی تماس بگیرید.'
+            }
           />
 
           <Box

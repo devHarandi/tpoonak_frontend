@@ -1,0 +1,297 @@
+.operatorShell {
+  min-height: 100dvh;
+  display: flex;
+  align-items: stretch;
+  background:
+    radial-gradient(circle at 78% 0%, rgba(8, 120, 79, 0.1), transparent 28rem),
+    #f3f7f4;
+  color: #17231e;
+  font-family: 'iranYekan', sans-serif;
+}
+
+.desktopSidebar {
+  width: 264px;
+  flex: 0 0 264px;
+  min-height: 100dvh;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  background: #ffffff;
+  border-left: 1px solid #dfeae3;
+}
+
+.sidebarContent {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding: 26px 18px 18px;
+}
+
+.sidebarBrand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 4px;
+}
+
+.brandMark {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: #e6f4ee;
+  overflow: hidden;
+}
+
+.brandMark img {
+  object-fit: contain;
+}
+
+.brandName,
+.brandCaption,
+.operatorName,
+.operatorRole,
+.navigationLabel,
+.navigationText,
+.topbarEyebrow,
+.topbarHeading,
+.liveText,
+.pageContent :global(.MuiTypography-root),
+.pageContent :global(.MuiButton-root),
+.pageContent :global(.MuiTableCell-root),
+.pageContent :global(.MuiInputBase-root),
+.pageContent :global(.MuiInputLabel-root),
+.pageContent :global(.MuiFormHelperText-root),
+.pageContent :global(.MuiChip-label) {
+  font-family: 'iranYekan', sans-serif !important;
+}
+
+.brandName {
+  color: #075c3e;
+  font-size: 16px !important;
+  line-height: 1.5;
+  font-weight: 900 !important;
+}
+
+.brandCaption {
+  color: #7c8d83;
+  font-size: 11px !important;
+  line-height: 1.4;
+}
+
+.operatorIdentity {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin: 30px 0 28px;
+  padding: 14px;
+  border: 1px solid #deebe3;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #f9fcfa, #eef7f2);
+}
+
+.operatorAvatar,
+.topbarAvatar {
+  color: #075c3e !important;
+  background: #d9eee3 !important;
+  font-weight: 900 !important;
+}
+
+.operatorAvatar {
+  width: 44px !important;
+  height: 44px !important;
+}
+
+.operatorName {
+  color: #17231e;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.operatorRole {
+  margin-top: 3px !important;
+  color: #08784f;
+  font-size: 11px !important;
+}
+
+.navigationLabel {
+  padding: 0 10px;
+  color: #91a198;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+}
+
+.navigationList {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.navigationItem {
+  min-height: 48px !important;
+  padding: 8px 11px !important;
+  border-radius: 14px !important;
+  color: #506159 !important;
+}
+
+.navigationItem:hover,
+.navigationItem.Mui-selected,
+.navigationItem.Mui-selected:hover {
+  color: #075c3e !important;
+  background: #e6f4ee !important;
+}
+
+.navigationIcon {
+  min-width: 38px !important;
+  color: currentColor !important;
+}
+
+.navigationText {
+  text-align: right;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+}
+
+.sidebarFooter {
+  margin-top: auto;
+}
+
+.sidebarDivider {
+  margin: 16px 0 !important;
+  border-color: #e3ece7 !important;
+}
+
+.logoutButton {
+  justify-content: flex-start !important;
+  gap: 7px;
+  color: #b42318 !important;
+  font-size: 12px !important;
+  background: #fff6f5 !important;
+}
+
+.mainArea {
+  flex: 1;
+  min-width: 0;
+}
+
+.topbar {
+  min-height: 84px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px clamp(22px, 4vw, 58px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(243, 247, 244, 0.88);
+  border-bottom: 1px solid rgba(216, 229, 220, 0.8);
+  backdrop-filter: blur(18px);
+}
+
+.topbarTitle,
+.topbarMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.topbarEyebrow {
+  color: #7a8c82;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+
+.topbarHeading {
+  margin-top: 2px !important;
+  color: #17231e;
+  font-size: 21px !important;
+  font-weight: 900 !important;
+}
+
+.liveDot {
+  color: #23a36c;
+  font-size: 18px !important;
+  line-height: 1;
+}
+
+.liveText {
+  color: #567064;
+  font-size: 12px !important;
+}
+
+.topbarAvatar {
+  width: 36px !important;
+  height: 36px !important;
+  margin-right: 5px;
+  font-size: 14px !important;
+}
+
+.mobileMenuButton,
+.mobileClose {
+  display: none !important;
+}
+
+.pageContent {
+  width: min(100%, 1540px);
+  margin: 0 auto;
+  padding: clamp(22px, 3vw, 42px) clamp(22px, 4vw, 58px) 52px;
+}
+
+.mobileDrawer {
+  width: min(310px, 88vw) !important;
+  border-left: 1px solid #dfeae3;
+  background: #ffffff !important;
+}
+
+@media (max-width: 900px) {
+  .desktopSidebar {
+    display: none;
+  }
+
+  .topbar {
+    min-height: 72px;
+    padding: 13px 18px;
+  }
+
+  .mobileMenuButton,
+  .mobileClose {
+    display: inline-flex !important;
+  }
+
+  .mobileMenuButton {
+    width: 42px;
+    height: 42px;
+    color: #075c3e !important;
+    border: 1px solid #d9e8df;
+    border-radius: 13px !important;
+    background: #ffffff !important;
+  }
+
+  .mobileClose {
+    margin-right: auto;
+    color: #075c3e !important;
+  }
+
+  .topbarHeading {
+    font-size: 17px !important;
+  }
+
+  .topbarMeta {
+    display: none;
+  }
+
+  .sidebarContent {
+    min-height: 100%;
+  }
+
+  .pageContent {
+    padding: 20px 16px 38px;
+  }
+}

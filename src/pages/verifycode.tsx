@@ -100,7 +100,14 @@ export default function VerifyCode() {
         profile?.last_name?.trim() &&
         (profile?.customer_type !== 'company' || profile?.company_name?.trim())
       );
-      router.push(isProfileCompleted ? '/home' : '/editprofile?welcome=1');
+      const isOperator = profile?.roles?.some((role) => role.name === 'Operator');
+      router.push(
+        isProfileCompleted
+          ? isOperator
+            ? '/operator/'
+            : '/home'
+          : '/editprofile?welcome=1'
+      );
     } catch (err: any) {
       setError(err.response?.data?.message || 'کد نامعتبر است. لطفاً دوباره تلاش کنید.');
       setOpenSnackbar(true);

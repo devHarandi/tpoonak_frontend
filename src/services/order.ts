@@ -1,5 +1,5 @@
 import { post, get,patch } from './http';
-import { CreateOrderRequest, CreateOrderResponse, GetOrdersResponse, GetOrderResponse, GetVehicleTypeResponse, GetCanCreateOrder, GetSystemSetting, GetChangeSystemSetting, SetChangeSystemSetting } from '@/types/order';
+import { CreateOrderRequest, CreateOrderResponse, GetOrdersResponse, GetOrderResponse, GetVehicleTypeResponse, GetCanCreateOrder, GetSystemSetting, GetChangeSystemSetting, SetChangeSystemSetting, ManageOrderRequest } from '@/types/order';
 
 export const createOrder = async (data: CreateOrderRequest): Promise<CreateOrderResponse> => {
   const response = await post<CreateOrderResponse>('/orders/create', data);
@@ -36,6 +36,11 @@ export const getAllOrdersToday = async (status?: string): Promise<GetOrdersRespo
 
 export const updateOrderStatus = async (id: number, status: string): Promise<GetOrderResponse> => {
   const response = await patch<GetOrderResponse>(`/orders/${id}/status`, { status });
+  return response.data;
+};
+
+export const manageOrder = async (id: number, data: ManageOrderRequest): Promise<GetOrderResponse> => {
+  const response = await patch<GetOrderResponse>(`/orders/${id}/manage`, data);
   return response.data;
 };
 
