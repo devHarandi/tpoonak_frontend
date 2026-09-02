@@ -321,7 +321,7 @@ export default function Home() {
               <Box sx={{ display: 'grid', gap: 2.5 }}>
                 {processSteps.map((step, index) => (
                   <Box key={step.number} sx={{ alignItems: 'flex-start', display: 'flex', gap: 2.2, position: 'relative' }}>
-                    {index < processSteps.length - 1 && <Box sx={{ bgcolor: '#b7d9c5', bottom: -28, height: 32, position: 'absolute', right: 19, width: 1 }} />}
+                    {index < processSteps.length - 1 && <Box sx={{ bgcolor: '#b7d9c5', height: 32, position: 'absolute', right: 19, top: 40, width: '2px' }} />}
                     <Box sx={{ alignItems: 'center', bgcolor: index === 1 ? '#f4c400' : '#075c3e', borderRadius: 2.5, color: index === 1 ? '#17231e' : '#ffffff', display: 'flex', flexShrink: 0, fontSize: 16, fontWeight: 900, height: 40, justifyContent: 'center', width: 40 }}>{step.number}</Box>
                     <Box><Typography sx={{ color: '#17231e', fontSize: 16, fontWeight: 800 }}>{step.title}</Typography><Typography sx={{ color: '#65746c', fontSize: 13.5, lineHeight: 1.8, mt: 0.45 }}>{step.description}</Typography></Box>
                   </Box>
