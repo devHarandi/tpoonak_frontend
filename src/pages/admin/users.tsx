@@ -18,6 +18,7 @@ import {
   DialogActions,
   Snackbar,
   Alert,
+  LinearProgress,
   TextField,
   InputAdornment,
   TablePagination,
@@ -80,6 +81,7 @@ export default function UserManagement() {
   const [settleData, setSettleData] = useState<SettleBalanceRequest>({ user_id: 0, role_id: 0, amount: 0, description: '' });
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' });
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [hasLoaded, setHasLoaded] = useState(false);
   const [searchInput, setSearchInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
@@ -117,6 +119,7 @@ export default function UserManagement() {
         }
       } finally {
         setIsLoading(false);
+        setHasLoaded(true);
       }
     };
 
@@ -326,7 +329,7 @@ export default function UserManagement() {
     return first_name || last_name ? `${first_name} ${last_name}`.trim() : 'کاربر سیستم';
   };
 
-  if (isLoading) {
+  if (!hasLoaded) {
     return (
       <AppFrame>
         <Header title="تیپاکس پونک - کاربران" />
@@ -384,27 +387,33 @@ export default function UserManagement() {
           </Button>
         </Box>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2, p: 1.5, bgcolor: '#fff', border: '1px solid #e1eae5', borderRadius: '16px' }}>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' }, gap: 1.5, mb: 2, p: 1.5, bgcolor: '#fff', border: '1px solid #e1eae5', borderRadius: '16px' }}>
           <TextField
             fullWidth
             size="small"
             value={searchInput}
             onChange={(event) => setSearchInput(event.target.value)}
             placeholder="جست‌وجوی نام، شماره موبایل، شرکت یا نقش"
-            sx={{ '& input': { fontFamily: 'IranYekan, sans-serif', textAlign: 'right' } }}
+            sx={{ flex: 1, minWidth: 0, '& input': { fontFamily: 'IranYekan, sans-serif', textAlign: 'right' } }}
             InputProps={{
               startAdornment: <InputAdornment position="start"><Search sx={{ color: '#82958a' }} /></InputAdornment>,
             }}
           />
-          <Typography sx={{ minWidth: 105, color: '#65746c', fontSize: 13, fontFamily: 'IranYekan, sans-serif', whiteSpace: 'nowrap' }}>
+          <Typography sx={{ minWidth: { xs: 'auto', sm: 105 }, color: '#65746c', fontSize: 13, fontFamily: 'IranYekan, sans-serif', textAlign: { xs: 'right', sm: 'center' }, whiteSpace: 'nowrap' }}>
             {totalUsers.toLocaleString('fa-IR')} کاربر
           </Typography>
         </Box>
 
+        {isLoading && <LinearProgress sx={{ mb: 1.5, borderRadius: 99, bgcolor: '#e6f4ee', '& .MuiLinearProgress-bar': { bgcolor: '#08784f' } }} />}
+
         {users.length === 0 ? (
-          <Typography sx={{ textAlign: 'right', fontFamily: 'IranYekan, sans-serif', color: '#00784a' }}>
-            {searchQuery ? 'کاربری با این مشخصات یافت نشد' : 'کاربری یافت نشد'}
-          </Typography>
+          isLoading ? (
+            <Card sx={{ borderRadius: '18px', textAlign: 'center' }}><CardContent sx={{ py: 5 }}><Typography sx={{ color: '#65746c', fontFamily: 'IranYekan, sans-serif' }}>در حال جست‌وجو...</Typography></CardContent></Card>
+          ) : (
+            <Typography sx={{ textAlign: 'right', fontFamily: 'IranYekan, sans-serif', color: '#00784a' }}>
+              {searchQuery ? 'کاربری با این مشخصات یافت نشد' : 'کاربری یافت نشد'}
+            </Typography>
+          )
         ) : (
           users.map((user) => (
             <Card

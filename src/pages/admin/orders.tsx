@@ -12,6 +12,7 @@ import {
   Button,
   Snackbar,
   Alert,
+  LinearProgress,
   FormControl,
   InputLabel,
   Select,
@@ -495,7 +496,9 @@ export default function AllOrders() {
             </Typography>
           </Box>
 
-          {isLoading ? (
+          {isLoading && <LinearProgress sx={{ mb: 1.5, borderRadius: 99, bgcolor: '#e6f4ee', '& .MuiLinearProgress-bar': { bgcolor: '#08784f' } }} />}
+
+          {isLoading && orders.length === 0 ? (
             <Card sx={{ borderRadius: '18px', textAlign: 'center' }}><CardContent sx={{ py: 5 }}><Typography sx={{ color: '#65746c', fontFamily: 'IranYekan, sans-serif' }}>در حال بارگذاری...</Typography></CardContent></Card>
           ) : orders.length === 0 ? (
             <Card sx={{ borderRadius: '18px', textAlign: 'center' }}><CardContent sx={{ py: 5 }}><Typography sx={{ color: '#65746c', fontFamily: 'IranYekan, sans-serif' }}>سفارشی یافت نشد</Typography></CardContent></Card>
