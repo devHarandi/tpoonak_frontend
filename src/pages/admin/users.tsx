@@ -43,6 +43,21 @@ const formatPersianDate = (dateStr: string) => {
   }
 };
 
+const getRoleLabel = (roleName: string) => {
+  if (roleName === 'Customer') return 'مشتری';
+  if (roleName === 'Collector') return 'حمل‌کننده';
+  if (roleName === 'Operator') return 'اپراتور';
+  if (roleName === 'Admin') return 'مدیر سیستم';
+  return roleName;
+};
+
+const getRoleColor = (roleName: string) => {
+  if (roleName === 'Customer') return '#4caf50';
+  if (roleName === 'Collector') return '#fbd700';
+  if (roleName === 'Operator') return '#315ea8';
+  return '#00784a';
+};
+
 export default function UserManagement() {
   const [users, setUsers] = useState<User[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
@@ -173,7 +188,7 @@ export default function UserManagement() {
       setUsers(updatedUsers.data);
       setSnackbar({
         open: true,
-        message: `نقش "${roles.find(r => r.id === selectedRoleId)?.name === 'Customer' ? 'مشتری' : roles.find(r => r.id === selectedRoleId)?.name === 'Collector' ? 'حمل‌کننده' : 'ادمین'}" با موفقیت اضافه شد`,
+        message: `نقش "${getRoleLabel(roles.find(r => r.id === selectedRoleId)?.name || '')}" با موفقیت اضافه شد`,
         severity: 'success'
       });
       handleCloseAssignDialog();
@@ -200,7 +215,7 @@ export default function UserManagement() {
       setUsers(updatedUsers.data);
       setSnackbar({
         open: true,
-        message: `نقش "${roles.find(r => r.id === selectedRoleId)?.name === 'Customer' ? 'مشتری' : roles.find(r => r.id === selectedRoleId)?.name === 'Collector' ? 'حمل‌کننده' : 'ادمین'}" با موفقیت حذف شد`,
+        message: `نقش "${getRoleLabel(roles.find(r => r.id === selectedRoleId)?.name || '')}" با موفقیت حذف شد`,
         severity: 'success'
       });
       handleCloseRemoveDialog();
@@ -422,9 +437,9 @@ export default function UserManagement() {
                     {user.balances.map((balance, index) => (
                       <Box key={index} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <AccountBalance sx={{ color: balance.role.name === 'Customer' ? '#4caf50' : balance.role.name === 'Collector' ? '#fbd700' : '#00784a', fontSize: 18 }} />
+                          <AccountBalance sx={{ color: getRoleColor(balance.role.name), fontSize: 18 }} />
                           <Typography sx={{ fontSize: '14px', fontFamily: 'IranYekan, sans-serif', color: '#000', fontWeight: 'bold', textAlign: 'right' }}>
-                            حساب {balance.role.name === 'Customer' ? 'مشتری' : balance.role.name === 'Collector' ? 'حمل‌کننده' : 'ادمین'}: {Number(balance.balance).toLocaleString('fa-IR')} تومان
+                            حساب {getRoleLabel(balance.role.name)}: {Number(balance.balance).toLocaleString('fa-IR')} تومان
                           </Typography>
                         </Box>
                         <IconButton
@@ -472,10 +487,10 @@ export default function UserManagement() {
                     {user.profile.roles.map((role) => (
                       <Chip
                         key={role.id}
-                        label={role.name === 'Customer' ? 'مشتری' : role.name === 'Collector' ? 'حمل‌کننده' : 'ادمین'}
+                        label={getRoleLabel(role.name)}
                         onClick={() => handleOpenRemoveDialog(user.id, role.id)}
                         sx={{
-                          backgroundColor: role.name === 'Customer' ? '#4caf50' : role.name === 'Collector' ? '#fbd700' : '#00784a',
+                          backgroundColor: getRoleColor(role.name),
                           color: 'white',
                           fontFamily: 'IranYekan, sans-serif',
                           fontSize: '12px',
@@ -561,10 +576,10 @@ export default function UserManagement() {
                       width: 12, 
                       height: 12, 
                       borderRadius: '50%', 
-                      backgroundColor: role.name === 'Customer' ? '#4caf50' : role.name === 'Collector' ? '#fbd700' : '#00784a'
+                      backgroundColor: getRoleColor(role.name)
                     }} 
                   />
-                  {role.name === 'Customer' ? 'مشتری' : role.name === 'Collector' ? 'حمل‌کننده' : 'ادمین'}
+                  {getRoleLabel(role.name)}
                 </MenuItem>
               ))}
             </Select>
@@ -615,7 +630,7 @@ export default function UserManagement() {
         </DialogTitle>
         <DialogContent sx={{ pt: 2 }}>
           <Typography sx={{ fontFamily: 'IranYekan, sans-serif', color: '#00784a', textAlign: 'right' }}>
-            آیا مطمئن هستید که می‌خواهید نقش "{roles.find(r => r.id === selectedRoleId)?.name === 'Customer' ? 'مشتری' : roles.find(r => r.id === selectedRoleId)?.name === 'Collector' ? 'حمل‌کننده' : 'ادمین'}" را حذف کنید؟
+            آیا مطمئن هستید که می‌خواهید نقش "{getRoleLabel(roles.find(r => r.id === selectedRoleId)?.name || '')}" را حذف کنید؟
           </Typography>
         </DialogContent>
         <DialogActions sx={{ p: 2, gap: 1, justifyContent: 'center' }}>
@@ -750,10 +765,10 @@ export default function UserManagement() {
                       width: 12, 
                       height: 12, 
                       borderRadius: '50%', 
-                      backgroundColor: role.name === 'Customer' ? '#4caf50' : role.name === 'Collector' ? '#fbd700' : '#00784a'
+                      backgroundColor: getRoleColor(role.name)
                     }} 
                   />
-                  {role.name === 'Customer' ? 'مشتری' : role.name === 'Collector' ? 'حمل‌کننده' : 'ادمین'}
+                  {getRoleLabel(role.name)}
                 </MenuItem>
               ))}
             </Select>
