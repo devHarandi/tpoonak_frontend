@@ -185,7 +185,7 @@ export default function Home() {
   );
 
   return (
-    <Box sx={{ bgcolor: '#f3f7f4', color: '#17231e', direction: 'rtl', overflow: 'hidden' }}>
+    <Box sx={{ bgcolor: '#f3f7f4', color: '#17231e', direction: 'rtl', overflow: 'hidden', '& [data-section]': { scrollMarginTop: { xs: 70, md: 78 } } }}>
       <AppBar position="sticky" elevation={0} sx={{ backdropFilter: 'blur(18px)', bgcolor: 'rgba(255,255,255,0.88)', borderBottom: '1px solid rgba(225,234,229,0.9)', color: '#17231e', zIndex: 20 }}>
         <Container maxWidth="lg">
           <Toolbar disableGutters sx={{ gap: 2, minHeight: { xs: 70, md: 78 } }}>
