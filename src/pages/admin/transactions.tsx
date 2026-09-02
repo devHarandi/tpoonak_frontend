@@ -162,7 +162,7 @@ export default function Transactions() {
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <AccountBalance sx={{ color: transaction.wallet_balance.role.name === 'Customer' ? '#4caf50' : transaction.wallet_balance.role.name === 'Collector' ? '#fbd700' : '#00784a', fontSize: 18 }} />
                     <Typography sx={{ fontSize: '14px', fontFamily: 'IranYekan, sans-serif', color: '#65746c', textAlign: 'right' }}>
-                      نقش: {transaction.wallet_balance.role.name === 'Customer' ? 'مشتری' : transaction.wallet_balance.role.name === 'Collector' ? 'حمل‌کننده' : 'ادمین'}
+                      نقش: {transaction.wallet_balance.role.name === 'Customer' ? 'مشتری' : transaction.wallet_balance.role.name === 'Collector' ? 'حمل‌کننده' : 'اپراتور'}
                     </Typography>
                   </Box>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

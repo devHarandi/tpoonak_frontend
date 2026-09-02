@@ -1,6 +1,13 @@
 import { post, get,patch } from './http';
 import { CreateOrderRequest, CreateOrderResponse, GetOrdersResponse, GetOrderResponse, GetVehicleTypeResponse, GetCanCreateOrder, GetSystemSetting, GetChangeSystemSetting, SetChangeSystemSetting, ManageOrderRequest } from '@/types/order';
 
+export interface OrderListQuery {
+  search?: string;
+  page?: number;
+  pageSize?: number;
+  isToday?: boolean;
+}
+
 export const createOrder = async (data: CreateOrderRequest): Promise<CreateOrderResponse> => {
   const response = await post<CreateOrderResponse>('/orders/create', data);
   return response.data;
@@ -16,22 +23,20 @@ export const getOrder = async (id: number): Promise<GetOrderResponse> => {
   return response.data;
 };
 
-export const getAllOrders = async (status?: string): Promise<GetOrdersResponse> => {
-  const timestamp = new Date().getTime(); // پارامتر تصادفی برای جلوگیری از کش
-  const url = status 
-    ? `/orders/all-orders?status=${status}&_=${timestamp}` 
-    : `/orders/all-orders?_=${timestamp}`;
-  const response = await get<GetOrdersResponse>(url);
+export const getAllOrders = async (status?: string, query: OrderListQuery = {}): Promise<GetOrdersResponse> => {
+  const params: Record<string, string | number | boolean> = { _: new Date().getTime() };
+  if (status) params.status = status;
+  if (query.search?.trim()) params.search = query.search.trim();
+  if (query.page) params.page = query.page;
+  if (query.pageSize) params.page_size = query.pageSize;
+  if (query.isToday) params.is_today = true;
+
+  const response = await get<GetOrdersResponse>('/orders/all-orders', { params });
   return response.data;
 };
 
 export const getAllOrdersToday = async (status?: string): Promise<GetOrdersResponse> => {
-  const timestamp = new Date().getTime(); // پارامتر تصادفی
-  const url = status 
-    ? `/orders/all-orders?status=${status}&is_today=true&_=${timestamp}`
-    : `/orders/all-orders?is_today=true&_=${timestamp}`;
-  const response = await get<GetOrdersResponse>(url);
-  return response.data;
+  return getAllOrders(status, { isToday: true });
 };
 
 export const updateOrderStatus = async (id: number, status: string): Promise<GetOrderResponse> => {

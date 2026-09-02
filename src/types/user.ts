@@ -1,4 +1,5 @@
 import { CustomerType } from './auth';
+import { PaginationMeta } from './pagination';
 
 export interface User {
   id: number;
@@ -47,6 +48,7 @@ export interface GetUsersResponse {
   message: string;
   status: number;
   data: User[];
+  pagination?: PaginationMeta;
 }
 
 export interface GetRolesResponse {

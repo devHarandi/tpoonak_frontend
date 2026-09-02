@@ -58,7 +58,7 @@ export default function OperatorLayout({
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const displayName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'اپراتور سیستم';
-  const roleLabel = profile.roles.some((role) => role.name === 'Admin') ? 'مدیر سیستم' : 'اپراتور عملیات';
+  const roleLabel = 'اپراتور عملیات';
 
   const handleNavigate = (section: OperatorSection) => {
     onSectionChange(section);

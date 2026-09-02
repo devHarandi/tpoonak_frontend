@@ -19,12 +19,14 @@ import {
   Snackbar,
   Alert,
   TextField,
+  InputAdornment,
+  TablePagination,
   FormLabel,
   Radio,
   RadioGroup,
   FormControlLabel,
 } from '@mui/material';
-import { Add, Person, Phone, AccountBalance, Payment, Receipt } from '@mui/icons-material';
+import { Add, Person, Phone, AccountBalance, Payment, Receipt, Search } from '@mui/icons-material';
 import Header from '@/components/common/Header';
 import CustomBottomNavigation from '@/components/common/CustomBottomNavigation';
 import AppFrame from '@/components/common/AppFrame';
@@ -46,15 +48,14 @@ const formatPersianDate = (dateStr: string) => {
 const getRoleLabel = (roleName: string) => {
   if (roleName === 'Customer') return 'مشتری';
   if (roleName === 'Collector') return 'حمل‌کننده';
-  if (roleName === 'Operator') return 'اپراتور';
-  if (roleName === 'Admin') return 'مدیر سیستم';
+  if (roleName === 'Operator' || roleName === 'Admin') return 'اپراتور';
   return roleName;
 };
 
 const getRoleColor = (roleName: string) => {
   if (roleName === 'Customer') return '#4caf50';
   if (roleName === 'Collector') return '#fbd700';
-  if (roleName === 'Operator') return '#315ea8';
+  if (roleName === 'Operator' || roleName === 'Admin') return '#315ea8';
   return '#00784a';
 };
 
@@ -78,15 +79,33 @@ export default function UserManagement() {
   const [settleData, setSettleData] = useState<SettleBalanceRequest>({ user_id: 0, role_id: 0, amount: 0, description: '' });
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' });
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [searchInput, setSearchInput] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(25);
+  const [totalUsers, setTotalUsers] = useState(0);
   const router = useRouter();
 
-  // بارگذاری کاربران و نقش‌ها
+  // جست‌وجو با تأخیر کوتاه تا برای هر کلید یک درخواست به سرور ارسال نشود.
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setPage(0);
+      setSearchQuery(searchInput.trim());
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
+
+  // بارگذاری فقط صفحه‌ی جاری کاربران و نقش‌ها
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const [usersResponse, rolesResponse] = await Promise.all([getUsers(), getRoles()]);
+        const [usersResponse, rolesResponse] = await Promise.all([
+          getUsers({ search: searchQuery, page: page + 1, pageSize }),
+          getRoles(),
+        ]);
         setUsers(usersResponse.data);
+        setTotalUsers(usersResponse.pagination?.total_count ?? usersResponse.data.length);
         setRoles(rolesResponse.data);
       } catch (err: any) {
         if (err.response?.status === 403) {
@@ -101,7 +120,13 @@ export default function UserManagement() {
     };
 
     fetchData();
-  }, [router]);
+  }, [page, pageSize, searchQuery, router]);
+
+  const refreshUsers = async () => {
+    const response = await getUsers({ search: searchQuery, page: page + 1, pageSize });
+    setUsers(response.data);
+    setTotalUsers(response.pagination?.total_count ?? response.data.length);
+  };
 
   // مدیریت بستن Snackbar
   const handleCloseSnackbar = () => {
@@ -184,8 +209,7 @@ export default function UserManagement() {
     try {
       setIsLoading(true);
       const response = await assignRole({ user_id: selectedUserId, role_id: selectedRoleId });
-      const updatedUsers = await getUsers();
-      setUsers(updatedUsers.data);
+      await refreshUsers();
       setSnackbar({
         open: true,
         message: `نقش "${getRoleLabel(roles.find(r => r.id === selectedRoleId)?.name || '')}" با موفقیت اضافه شد`,
@@ -211,8 +235,7 @@ export default function UserManagement() {
     try {
       setIsLoading(true);
       const response = await removeRole({ user_id: selectedUserId, role_id: selectedRoleId });
-      const updatedUsers = await getUsers();
-      setUsers(updatedUsers.data);
+      await refreshUsers();
       setSnackbar({
         open: true,
         message: `نقش "${getRoleLabel(roles.find(r => r.id === selectedRoleId)?.name || '')}" با موفقیت حذف شد`,
@@ -246,8 +269,7 @@ export default function UserManagement() {
     try {
       setIsLoading(true);
       const response = await createUser(newUser);
-      const updatedUsers = await getUsers();
-      setUsers(updatedUsers.data);
+      await refreshUsers();
       setSnackbar({ open: true, message: 'کاربر با موفقیت ایجاد شد', severity: 'success' });
       handleCloseCreateDialog();
     } catch (err: any) {
@@ -272,8 +294,7 @@ export default function UserManagement() {
     try {
       setIsLoading(true);
       const response = await settleBalance(settleData);
-      const updatedUsers = await getUsers();
-      setUsers(updatedUsers.data);
+      await refreshUsers();
       setSnackbar({
         open: true,
         message: `مبلغ ${settleData.amount.toLocaleString('fa-IR')} تومان با موفقیت تخصیص یافت`,
@@ -362,9 +383,26 @@ export default function UserManagement() {
           </Button>
         </Box>
 
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2, p: 1.5, bgcolor: '#fff', border: '1px solid #e1eae5', borderRadius: '16px' }}>
+          <TextField
+            fullWidth
+            size="small"
+            value={searchInput}
+            onChange={(event) => setSearchInput(event.target.value)}
+            placeholder="جست‌وجوی نام، شماره موبایل، شرکت یا نقش"
+            sx={{ '& input': { fontFamily: 'IranYekan, sans-serif', textAlign: 'right' } }}
+            InputProps={{
+              startAdornment: <InputAdornment position="start"><Search sx={{ color: '#82958a' }} /></InputAdornment>,
+            }}
+          />
+          <Typography sx={{ minWidth: 105, color: '#65746c', fontSize: 13, fontFamily: 'IranYekan, sans-serif', whiteSpace: 'nowrap' }}>
+            {totalUsers.toLocaleString('fa-IR')} کاربر
+          </Typography>
+        </Box>
+
         {users.length === 0 ? (
           <Typography sx={{ textAlign: 'right', fontFamily: 'IranYekan, sans-serif', color: '#00784a' }}>
-            کاربری یافت نشد
+            {searchQuery ? 'کاربری با این مشخصات یافت نشد' : 'کاربری یافت نشد'}
           </Typography>
         ) : (
           users.map((user) => (
@@ -539,6 +577,21 @@ export default function UserManagement() {
             </Card>
           ))
         )}
+        <TablePagination
+          component="div"
+          count={totalUsers}
+          page={page}
+          onPageChange={(_, nextPage) => setPage(nextPage)}
+          rowsPerPage={pageSize}
+          onRowsPerPageChange={(event) => {
+            setPageSize(Number(event.target.value));
+            setPage(0);
+          }}
+          rowsPerPageOptions={[10, 25, 50, 100]}
+          labelRowsPerPage="تعداد در صفحه"
+          labelDisplayedRows={({ from, to, count }) => `${from}–${to} از ${count}`}
+          sx={{ direction: 'ltr', mt: 1, bgcolor: '#fff', border: '1px solid #e1eae5', borderRadius: '14px' }}
+        />
       </Box>
 
       {/* Assign Role Dialog */}

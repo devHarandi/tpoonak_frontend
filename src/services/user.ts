@@ -1,8 +1,21 @@
 import { get, post, del ,patch} from './http';
 import { GetUsersResponse, GetRolesResponse, CreateUserRequest, AssignRoleRequest, RemoveRoleRequest, SettleBalanceRequest, SettleBalanceResponse, ApiResponse, GetTransactionsResponse, GetProfileResponse, GetAllTransactionsResponse, TransactionsResponse } from '@/types/user';
 
-export const getUsers = async (): Promise<GetUsersResponse> => {
-  const response = await get<GetUsersResponse>('/accounts/users/list');
+export interface UserListQuery {
+  search?: string;
+  roleId?: number;
+  page?: number;
+  pageSize?: number;
+}
+
+export const getUsers = async (query: UserListQuery = {}): Promise<GetUsersResponse> => {
+  const params: Record<string, string | number> = {};
+  if (query.search?.trim()) params.search = query.search.trim();
+  if (query.roleId) params.role_id = query.roleId;
+  if (query.page) params.page = query.page;
+  if (query.pageSize) params.page_size = query.pageSize;
+
+  const response = await get<GetUsersResponse>('/accounts/users/list', { params });
   return response.data;
 };
 

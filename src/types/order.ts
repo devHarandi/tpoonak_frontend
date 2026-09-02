@@ -1,3 +1,5 @@
+import { PaginationMeta } from './pagination';
+
 export interface CreateOrderRequest {
   carrier_type_id: number;
   vehicle_type_id: number;
@@ -73,6 +75,7 @@ export interface GetOrdersResponse {
   message: string;
   status: number;
   data: Order[];
+  pagination?: PaginationMeta;
 }
 
 export interface GetOrderResponse {

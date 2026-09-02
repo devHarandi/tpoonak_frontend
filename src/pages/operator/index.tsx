@@ -297,7 +297,7 @@ function UsersTable({
     if (role === 'Customer') return 'مشتری';
     if (role === 'Collector') return 'جمع‌آوری‌کننده';
     if (role === 'Operator') return 'اپراتور';
-    if (role === 'Admin') return 'مدیر سیستم';
+    if (role === 'Admin') return 'اپراتور';
     return role;
   };
 

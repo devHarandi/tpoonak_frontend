@@ -23,9 +23,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  TextField,
+  InputAdornment,
+  TablePagination,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { Check } from '@mui/icons-material';
+import { Check, Search } from '@mui/icons-material';
 import Header from '@/components/common/Header';
 import AppFrame from '@/components/common/AppFrame';
 import CustomBottomNavigation from '@/components/common/CustomBottomNavigation';
@@ -122,20 +125,37 @@ export default function AllOrders() {
   const [openCancelModal, setOpenCancelModal] = useState<boolean>(false);
   const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>('');
+  const [searchInput, setSearchInput] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(25);
+  const [totalOrders, setTotalOrders] = useState(0);
   const [signature, setSignature] = useState<string | null>(null);
   const signatureRef = useRef<any>(null);
   const router = useRouter();
   const [isActiveOrder, setIsActiveOrder] = useState<boolean>(true);
 
-  // بارگذاری سفارشات و تنظیمات اولیه
+  // جست‌وجو با تأخیر کوتاه تا برای هر کلید یک درخواست به سرور ارسال نشود.
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setPage(0);
+      setSearchQuery(searchInput.trim());
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
+
+  // بارگذاری فقط صفحه‌ی جاری سفارشات
   useEffect(() => {
     const fetchOrders = async () => {
       try {
         setIsLoading(true);
-        const response = await getAllOrders(statusFilter || undefined);
-        const responseSetting = await settingOrder();
-        setIsActiveOrder(responseSetting.data.can_create_order);
+        const response = await getAllOrders(statusFilter || undefined, {
+          search: searchQuery,
+          page: page + 1,
+          pageSize,
+        });
         setOrders(response.data);
+        setTotalOrders(response.pagination?.total_count ?? response.data.length);
       } catch (err: any) {
         if (err.response?.status === 403) {
           setError('شما اجازه انجام این دستور را ندارید.');
@@ -153,7 +173,21 @@ export default function AllOrders() {
     };
 
     fetchOrders();
-  }, [statusFilter, router]);
+  }, [page, pageSize, searchQuery, statusFilter, router]);
+
+  // تنظیمات فقط یک‌بار در شروع صفحه دریافت می‌شود.
+  useEffect(() => {
+    const fetchSetting = async () => {
+      try {
+        const responseSetting = await settingOrder();
+        setIsActiveOrder(responseSetting.data.can_create_order);
+      } catch (err: any) {
+        setError(err.response?.data?.message || 'خطا در بارگذاری تنظیمات سفارشات');
+        setOpenSnackbar(true);
+      }
+    };
+    fetchSetting();
+  }, [router]);
 
   // هندلر تغییر وضعیت سوئیچ
   const handleSwitchChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -366,6 +400,7 @@ export default function AllOrders() {
   // هندلر تغییر فیلتر وضعیت
   const handleStatusFilterChange = (event: any) => {
     setStatusFilter(event.target.value as string);
+    setPage(0);
   };
 
   // گزینه‌های فیلتر وضعیت
@@ -421,9 +456,20 @@ export default function AllOrders() {
             />
           </Box>
 
-          {/* فیلتر وضعیت */}
-          <Box sx={{ mb: 2.5 }}>
-            <FormControl sx={{ minWidth: '100%', backgroundColor: '#fff', borderRadius: '14px', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#dce8e1' }, '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#08784f' } }}>
+          {/* فیلتر وضعیت و جست‌وجوی سمت‌سرور */}
+          <Box sx={{ display: 'flex', gap: 1.2, flexWrap: 'wrap', mb: 2.5 }}>
+            <TextField
+              fullWidth
+              size="small"
+              value={searchInput}
+              onChange={(event) => setSearchInput(event.target.value)}
+              placeholder="جست‌وجوی شماره سفارش، مشتری، شرکت، موبایل یا آدرس"
+              sx={{ flex: '1 1 320px', backgroundColor: '#fff', borderRadius: '14px', '& input': { fontFamily: 'IranYekan, sans-serif', textAlign: 'right' } }}
+              InputProps={{
+                startAdornment: <InputAdornment position="start"><Search sx={{ color: '#82958a' }} /></InputAdornment>,
+              }}
+            />
+            <FormControl sx={{ minWidth: { xs: '100%', sm: 220 }, flex: '0 1 220px', backgroundColor: '#fff', borderRadius: '14px', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#dce8e1' }, '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#08784f' } }}>
               <InputLabel sx={{ fontFamily: 'IranYekan, sans-serif' }}>وضعیت</InputLabel>
               <Select
                 value={statusFilter}
@@ -444,6 +490,9 @@ export default function AllOrders() {
                 ))}
               </Select>
             </FormControl>
+            <Typography sx={{ alignSelf: 'center', color: '#65746c', fontFamily: 'IranYekan, sans-serif', fontSize: 13, whiteSpace: 'nowrap' }}>
+              {totalOrders.toLocaleString('fa-IR')} سفارش
+            </Typography>
           </Box>
 
           {isLoading ? (
@@ -680,6 +729,23 @@ export default function AllOrders() {
                 </CardContent>
               </Card>
             ))
+          )}
+          {!isLoading && (
+            <TablePagination
+              component="div"
+              count={totalOrders}
+              page={page}
+              onPageChange={(_, nextPage) => setPage(nextPage)}
+              rowsPerPage={pageSize}
+              onRowsPerPageChange={(event) => {
+                setPageSize(Number(event.target.value));
+                setPage(0);
+              }}
+              rowsPerPageOptions={[10, 25, 50, 100]}
+              labelRowsPerPage="تعداد در صفحه"
+              labelDisplayedRows={({ from, to, count }) => `${from}–${to} از ${count}`}
+              sx={{ direction: 'ltr', mt: 1, bgcolor: '#fff', border: '1px solid #e1eae5', borderRadius: '14px' }}
+            />
           )}
         </Box>
 
