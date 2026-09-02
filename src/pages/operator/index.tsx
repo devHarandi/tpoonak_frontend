@@ -297,7 +297,7 @@ function UsersTable({
     if (role === 'Customer') return 'مشتری';
     if (role === 'Collector') return 'جمع‌آوری‌کننده';
     if (role === 'Operator') return 'اپراتور';
-    if (role === 'Admin') return 'اپراتور';
+    if (role === 'Admin') return 'مدیر سیستم';
     return role;
   };
 
@@ -405,6 +405,9 @@ export default function OperatorPanel() {
   const [users, setUsers] = useState<User[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [orderTotalCount, setOrderTotalCount] = useState(0);
+  const [userTotalCount, setUserTotalCount] = useState(0);
+  const [transactionTotalCount, setTransactionTotalCount] = useState(0);
   const [totalDebt, setTotalDebt] = useState('0');
   const [systemSettings, setSystemSettings] = useState<GetSystemSetting['data'] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -413,9 +416,12 @@ export default function OperatorPanel() {
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [orderQuery, setOrderQuery] = useState('');
+  const [orderSearchQuery, setOrderSearchQuery] = useState('');
   const [orderStatusFilter, setOrderStatusFilter] = useState('');
   const [userQuery, setUserQuery] = useState('');
+  const [userSearchQuery, setUserSearchQuery] = useState('');
   const [transactionQuery, setTransactionQuery] = useState('');
+  const [transactionSearchQuery, setTransactionSearchQuery] = useState('');
   const [orderPage, setOrderPage] = useState(0);
   const [orderRowsPerPage, setOrderRowsPerPage] = useState(10);
   const [userPage, setUserPage] = useState(0);
@@ -441,6 +447,30 @@ export default function OperatorPanel() {
     if (isOperatorSection(querySection)) setActiveSection(querySection);
   }, [querySection]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setOrderSearchQuery(orderQuery.trim());
+      setOrderPage(0);
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [orderQuery]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setUserSearchQuery(userQuery.trim());
+      setUserPage(0);
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [userQuery]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTransactionSearchQuery(transactionQuery.trim());
+      setTransactionPage(0);
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [transactionQuery]);
+
   const loadData = useCallback(async (refresh = false) => {
     try {
       if (refresh) setIsRefreshing(true);
@@ -458,24 +488,45 @@ export default function OperatorPanel() {
       setProfile(profileData);
 
       const [ordersResult, usersResult, transactionsResult, settingsResult, rolesResult] = await Promise.allSettled([
-        getAllOrders(),
-        getUsers(),
-        getAllTransactions(),
+        getAllOrders(orderStatusFilter || undefined, {
+          search: activeSection === 'orders' ? orderSearchQuery : '',
+          page: activeSection === 'orders' ? orderPage + 1 : 1,
+          pageSize: activeSection === 'orders' ? orderRowsPerPage : 6,
+        }),
+        getUsers({
+          search: activeSection === 'users' ? userSearchQuery : '',
+          page: activeSection === 'users' ? userPage + 1 : 1,
+          pageSize: activeSection === 'users' ? userRowsPerPage : 100,
+        }),
+        getAllTransactions({
+          search: activeSection === 'transactions' ? transactionSearchQuery : '',
+          page: activeSection === 'transactions' ? transactionPage + 1 : 1,
+          pageSize: activeSection === 'transactions' ? transactionRowsPerPage : 10,
+        }),
         settingOrder(),
         getRoles(),
       ]);
 
-      if (ordersResult.status === 'fulfilled') setOrders(ordersResult.value.data);
-      if (usersResult.status === 'fulfilled') setUsers(usersResult.value.data);
+      if (ordersResult.status === 'fulfilled') {
+        setOrders(ordersResult.value.data);
+        setOrderTotalCount(ordersResult.value.pagination?.total_count ?? ordersResult.value.data.length);
+      }
+      if (usersResult.status === 'fulfilled') {
+        setUsers(usersResult.value.data);
+        setUserTotalCount(usersResult.value.pagination?.total_count ?? usersResult.value.data.length);
+      }
       if (transactionsResult.status === 'fulfilled') {
         setTransactions(transactionsResult.value.data.transactions);
         setTotalDebt(transactionsResult.value.data.total_debt);
+        setTransactionTotalCount(transactionsResult.value.pagination?.total_count ?? transactionsResult.value.data.transactions.length);
       }
       if (settingsResult.status === 'fulfilled') setSystemSettings(settingsResult.value.data);
       if (rolesResult.status === 'fulfilled') setRoles(rolesResult.value.data);
 
-      const failed = [ordersResult, usersResult, transactionsResult].some((result) => result.status === 'rejected');
+      const failed = [ordersResult, usersResult, transactionsResult, settingsResult, rolesResult]
+        .some((result) => result.status === 'rejected');
       if (failed) setError('بخشی از اطلاعات پنل دریافت نشد. اتصال API و دسترسی اپراتور را بررسی کنید.');
+      else setError('');
     } catch (err: any) {
       if (err.response?.status === 401 || err.response?.status === 403) {
         setAccessDenied(true);
@@ -486,7 +537,19 @@ export default function OperatorPanel() {
       setIsLoading(false);
       setIsRefreshing(false);
     }
-  }, []);
+  }, [
+    activeSection,
+    orderPage,
+    orderRowsPerPage,
+    orderSearchQuery,
+    orderStatusFilter,
+    transactionPage,
+    transactionRowsPerPage,
+    transactionSearchQuery,
+    userPage,
+    userRowsPerPage,
+    userSearchQuery,
+  ]);
 
   useEffect(() => {
     loadData();
@@ -497,56 +560,12 @@ export default function OperatorPanel() {
     [users]
   );
 
-  const filteredOrders = useMemo(() => {
-    const query = orderQuery.trim().toLowerCase();
-    return orders.filter((order) => {
-      const matchesStatus = !orderStatusFilter || order.status === orderStatusFilter;
-      if (!matchesStatus) return false;
-      if (!query) return true;
-      const carrierName = order.carrier ? `${order.carrier.first_name || ''} ${order.carrier.last_name || ''}` : '';
-      return [
-        String(order.id),
-        orderCustomerName(order),
-        order.user_mobile,
-        order.user_company_name,
-        order.vehicle_type_name,
-        carrierName,
-      ].some((value) => value?.toLowerCase().includes(query));
-    });
-  }, [orders, orderQuery, orderStatusFilter]);
-
-  const filteredUsers = useMemo(() => {
-    const query = userQuery.trim().toLowerCase();
-    if (!query) return users;
-    return users.filter((user) => {
-      const roleNames = user.profile.roles.map((role) => role.name).join(' ');
-      return [displayName(user), user.mobile, user.profile.company_name, roleNames]
-        .some((value) => value?.toLowerCase().includes(query));
-    });
-  }, [users, userQuery]);
-
-  const filteredTransactions = useMemo(() => {
-    const query = transactionQuery.trim().toLowerCase();
-    if (!query) return transactions;
-    return transactions.filter((transaction) => {
-      const user = users.find((item) => item.id === transaction.wallet_balance.user);
-      return [
-        String(transaction.id),
-        transaction.description,
-        transaction.transaction_type,
-        transaction.wallet_balance.role.name,
-        user ? displayName(user) : '',
-        user?.mobile || '',
-      ].some((value) => value?.toLowerCase().includes(query));
-    });
-  }, [transactions, transactionQuery, users]);
-
   const stats = useMemo(() => ({
-    totalOrders: orders.length,
+    totalOrders: orderTotalCount,
     pendingOrders: orders.filter((order) => order.status === 'pending').length,
     activeOrders: orders.filter((order) => ['collected', 'transferred_to_tipax'].includes(order.status)).length,
-    totalUsers: users.length,
-  }), [orders, users]);
+    totalUsers: userTotalCount,
+  }), [orderTotalCount, orders, userTotalCount]);
 
   const openOrder = (order: Order) => {
     setSelectedOrder(order);
@@ -576,8 +595,7 @@ export default function OperatorPanel() {
     try {
       setIsSaving(true);
       await manageOrder(selectedOrder.id, payload);
-      const ordersResponse = await getAllOrders();
-      setOrders(ordersResponse.data);
+      await loadData(true);
       setNotice('سفارش با موفقیت به‌روزرسانی شد.');
       closeOrder();
     } catch (err: any) {
@@ -611,8 +629,7 @@ export default function OperatorPanel() {
         company_name: newUser.customer_type === 'company' ? newUser.company_name.trim() : '',
         role_ids: [roleId],
       });
-      const usersResponse = await getUsers();
-      setUsers(usersResponse.data);
+      await loadData(true);
       setNotice('کاربر جدید با موفقیت ایجاد شد.');
       setCreateDialogOpen(false);
       setNewUser({ mobile: '', first_name: '', last_name: '', customer_type: 'individual', company_name: '', role: 'Customer' });
@@ -679,7 +696,6 @@ export default function OperatorPanel() {
   );
 
   const renderOrders = () => {
-    const visibleOrders = filteredOrders.slice(orderPage * orderRowsPerPage, orderPage * orderRowsPerPage + orderRowsPerPage);
     return (
       <>
         <SectionHeading eyebrow="مدیریت سفارش‌ها" title="همه سفارش‌ها" description="جست‌وجو، فیلتر، مشاهده جزئیات و کنترل جریان تحویل در یک جدول واحد." action={<Button variant="outlined" onClick={() => loadData(true)} disabled={isRefreshing} startIcon={<RefreshRoundedIcon />} sx={{ borderColor: '#b9d7c7', color: '#08784f' }}>تازه‌سازی</Button>} />
@@ -687,34 +703,32 @@ export default function OperatorPanel() {
           <Box sx={{ display: 'flex', gap: 1.2, flexWrap: 'wrap', mb: 2 }}>
             <TextField value={orderQuery} onChange={(event) => { setOrderQuery(event.target.value); setOrderPage(0); }} placeholder="جست‌وجوی شماره، مشتری، شرکت یا موبایل" size="small" sx={{ flex: '1 1 310px', minWidth: 240 }} InputProps={{ startAdornment: <InputAdornment position="start"><SearchRoundedIcon sx={{ color: '#8a9a90' }} /></InputAdornment> }} />
             <FormControl size="small" sx={{ minWidth: 190 }}><InputLabel>فیلتر وضعیت</InputLabel><Select value={orderStatusFilter} label="فیلتر وضعیت" onChange={(event) => { setOrderStatusFilter(event.target.value); setOrderPage(0); }}><MenuItem value="">همه وضعیت‌ها</MenuItem>{Object.entries(STATUS_LABELS).map(([value, label]) => <MenuItem key={value} value={value}>{label}</MenuItem>)}</Select></FormControl>
-            <Chip label={`${formatMoney(filteredOrders.length)} نتیجه`} sx={{ alignSelf: 'center', backgroundColor: '#eef7f2', color: '#08784f', fontWeight: 800 }} />
+            <Chip label={`${formatMoney(orderTotalCount)} نتیجه`} sx={{ alignSelf: 'center', backgroundColor: '#eef7f2', color: '#08784f', fontWeight: 800 }} />
           </Box>
-          <OrdersTable orders={visibleOrders} onOpen={openOrder} />
-          <TablePagination component="div" count={filteredOrders.length} page={orderPage} onPageChange={(_, page) => setOrderPage(page)} rowsPerPage={orderRowsPerPage} onRowsPerPageChange={(event) => { setOrderRowsPerPage(Number(event.target.value)); setOrderPage(0); }} rowsPerPageOptions={[10, 25, 50]} labelRowsPerPage="تعداد در صفحه" labelDisplayedRows={({ from, to, count }) => `${from}–${to} از ${count}`} />
+          <OrdersTable orders={orders} onOpen={openOrder} />
+          <TablePagination component="div" count={orderTotalCount} page={orderPage} onPageChange={(_, page) => setOrderPage(page)} rowsPerPage={orderRowsPerPage} onRowsPerPageChange={(event) => { setOrderRowsPerPage(Number(event.target.value)); setOrderPage(0); }} rowsPerPageOptions={[10, 25, 50]} labelRowsPerPage="تعداد در صفحه" labelDisplayedRows={({ from, to, count }) => `${from}–${to} از ${count}`} />
         </Paper>
       </>
     );
   };
 
   const renderUsers = () => {
-    const visibleUsers = filteredUsers.slice(userPage * userRowsPerPage, userPage * userRowsPerPage + userRowsPerPage);
     return (
       <>
         <SectionHeading eyebrow="مدیریت کاربران" title="مشتریان و تیم اجرایی" description="اطلاعات حساب، نوع مشتری، نقش‌ها و موجودی هر کاربر را سریع بررسی کن." action={<Button variant="contained" onClick={() => setCreateDialogOpen(true)} startIcon={<PersonAddAlt1OutlinedIcon />} sx={{ backgroundColor: '#08784f', '&:hover': { backgroundColor: '#075c3e' } }}>ایجاد کاربر</Button>} />
         <Paper sx={{ border: '1px solid #deebe3', borderRadius: 4, p: { xs: 1.5, md: 2 }, boxShadow: 'none' }}>
           <Box sx={{ display: 'flex', gap: 1.2, flexWrap: 'wrap', mb: 2 }}>
             <TextField value={userQuery} onChange={(event) => { setUserQuery(event.target.value); setUserPage(0); }} placeholder="جست‌وجوی نام، شرکت، موبایل یا نقش" size="small" sx={{ flex: '1 1 340px', minWidth: 240 }} InputProps={{ startAdornment: <InputAdornment position="start"><SearchRoundedIcon sx={{ color: '#8a9a90' }} /></InputAdornment> }} />
-            <Chip label={`${formatMoney(filteredUsers.length)} کاربر`} sx={{ alignSelf: 'center', backgroundColor: '#eef7f2', color: '#08784f', fontWeight: 800 }} />
+            <Chip label={`${formatMoney(userTotalCount)} کاربر`} sx={{ alignSelf: 'center', backgroundColor: '#eef7f2', color: '#08784f', fontWeight: 800 }} />
           </Box>
-          <UsersTable users={visibleUsers} onTransactions={handleUserTransactions} />
-          <TablePagination component="div" count={filteredUsers.length} page={userPage} onPageChange={(_, page) => setUserPage(page)} rowsPerPage={userRowsPerPage} onRowsPerPageChange={(event) => { setUserRowsPerPage(Number(event.target.value)); setUserPage(0); }} rowsPerPageOptions={[10, 25, 50]} labelRowsPerPage="تعداد در صفحه" labelDisplayedRows={({ from, to, count }) => `${from}–${to} از ${count}`} />
+          <UsersTable users={users} onTransactions={handleUserTransactions} />
+          <TablePagination component="div" count={userTotalCount} page={userPage} onPageChange={(_, page) => setUserPage(page)} rowsPerPage={userRowsPerPage} onRowsPerPageChange={(event) => { setUserRowsPerPage(Number(event.target.value)); setUserPage(0); }} rowsPerPageOptions={[10, 25, 50]} labelRowsPerPage="تعداد در صفحه" labelDisplayedRows={({ from, to, count }) => `${from}–${to} از ${count}`} />
         </Paper>
       </>
     );
   };
 
   const renderTransactions = () => {
-    const visibleTransactions = filteredTransactions.slice(transactionPage * transactionRowsPerPage, transactionPage * transactionRowsPerPage + transactionRowsPerPage);
     return (
       <>
         <SectionHeading eyebrow="گزارش مالی" title="تراکنش‌های سیستم" description="گردش کیف پول کاربران را با فیلتر و جزئیات کامل بررسی کن." action={<Button variant="outlined" onClick={() => loadData(true)} disabled={isRefreshing} startIcon={<RefreshRoundedIcon />} sx={{ borderColor: '#b9d7c7', color: '#08784f' }}>تازه‌سازی</Button>} />
@@ -723,8 +737,8 @@ export default function OperatorPanel() {
             <TextField value={transactionQuery} onChange={(event) => { setTransactionQuery(event.target.value); setTransactionPage(0); }} placeholder="جست‌وجوی کاربر، شناسه یا توضیح" size="small" sx={{ flex: '1 1 340px', minWidth: 240 }} InputProps={{ startAdornment: <InputAdornment position="start"><SearchRoundedIcon sx={{ color: '#8a9a90' }} /></InputAdornment> }} />
             <Card sx={{ borderRadius: 3, boxShadow: 'none', backgroundColor: '#eef7f2' }}><CardContent sx={{ py: 1, px: 2, '&:last-child': { pb: 1 } }}><Typography sx={{ color: '#718278', fontSize: 11 }}>مجموع بدهی</Typography><Typography sx={{ color: '#08784f', fontSize: 16, fontWeight: 900 }}>{formatMoney(totalDebt)} تومان</Typography></CardContent></Card>
           </Box>
-          <TransactionsTable transactions={visibleTransactions} users={users} />
-          <TablePagination component="div" count={filteredTransactions.length} page={transactionPage} onPageChange={(_, page) => setTransactionPage(page)} rowsPerPage={transactionRowsPerPage} onRowsPerPageChange={(event) => { setTransactionRowsPerPage(Number(event.target.value)); setTransactionPage(0); }} rowsPerPageOptions={[10, 25, 50]} labelRowsPerPage="تعداد در صفحه" labelDisplayedRows={({ from, to, count }) => `${from}–${to} از ${count}`} />
+          <TransactionsTable transactions={transactions} users={users} />
+          <TablePagination component="div" count={transactionTotalCount} page={transactionPage} onPageChange={(_, page) => setTransactionPage(page)} rowsPerPage={transactionRowsPerPage} onRowsPerPageChange={(event) => { setTransactionRowsPerPage(Number(event.target.value)); setTransactionPage(0); }} rowsPerPageOptions={[10, 25, 50]} labelRowsPerPage="تعداد در صفحه" labelDisplayedRows={({ from, to, count }) => `${from}–${to} از ${count}`} />
         </Paper>
       </>
     );

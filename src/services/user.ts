@@ -8,6 +8,12 @@ export interface UserListQuery {
   pageSize?: number;
 }
 
+export interface TransactionListQuery {
+  search?: string;
+  page?: number;
+  pageSize?: number;
+}
+
 export const getUsers = async (query: UserListQuery = {}): Promise<GetUsersResponse> => {
   const params: Record<string, string | number> = {};
   if (query.search?.trim()) params.search = query.search.trim();
@@ -29,8 +35,13 @@ export const getTransactions = async (userId: number): Promise<TransactionsRespo
   return response.data;
 };
 
-export const getAllTransactions = async (): Promise<GetAllTransactionsResponse> => {
-  const response = await get<GetAllTransactionsResponse>('/accounts/transactions');
+export const getAllTransactions = async (query: TransactionListQuery = {}): Promise<GetAllTransactionsResponse> => {
+  const params: Record<string, string | number> = {};
+  if (query.search?.trim()) params.search = query.search.trim();
+  if (query.page) params.page = query.page;
+  if (query.pageSize) params.page_size = query.pageSize;
+
+  const response = await get<GetAllTransactionsResponse>('/accounts/transactions', { params });
   return response.data;
 };
 

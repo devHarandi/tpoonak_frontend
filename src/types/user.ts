@@ -70,6 +70,7 @@ export interface GetAllTransactionsResponse {
     transactions: Transaction[];
     total_debt: string;
   };
+  pagination?: PaginationMeta;
 }
 
 export interface TransactionsResponse {

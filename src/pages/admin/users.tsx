@@ -48,7 +48,8 @@ const formatPersianDate = (dateStr: string) => {
 const getRoleLabel = (roleName: string) => {
   if (roleName === 'Customer') return 'مشتری';
   if (roleName === 'Collector') return 'حمل‌کننده';
-  if (roleName === 'Operator' || roleName === 'Admin') return 'اپراتور';
+  if (roleName === 'Operator') return 'اپراتور';
+  if (roleName === 'Admin') return 'مدیر سیستم';
   return roleName;
 };
 
