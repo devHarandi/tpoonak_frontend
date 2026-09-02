@@ -385,17 +385,18 @@ export default function AllOrders() {
         className={styles.container}
         sx={{
           textAlign: 'right',
-          minHeight: '100%',
+          minHeight: 'calc(100dvh - 68px)',
           overflowY: 'auto',
-          pb: 10,
+          pb: 14,
+          pt: 2.5,
           display: 'flex',
           flexDirection: 'column',
-          bgcolor: '#f5f5f5',
+          bgcolor: 'transparent',
           direction: 'rtl',
         }}
       >
-        <Box sx={{ p: 1, flex: 1 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+        <Box sx={{ px: 2, flex: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2.5, p: 1.5, bgcolor: '#fff', border: '1px solid #e1eae5', borderRadius: '16px' }}>
             <Typography variant="body1" sx={{ flex: 1, fontFamily: 'IranYekan, sans-serif' }}>
               {isActiveOrder ? 'سفارشات به صورت کلی باز است' : 'سفارشات به صورت کلی بسته است'}
             </Typography>
@@ -405,10 +406,10 @@ export default function AllOrders() {
               disabled={isLoading}
               sx={{
                 '& .MuiSwitch-switchBase.Mui-checked': {
-                  color: '#00784a',
+                  color: '#08784f',
                 },
                 '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                  backgroundColor: '#00784a',
+                  backgroundColor: '#08784f',
                 },
                 '& .MuiSwitch-switchBase.Mui-disabled': {
                   color: '#cccccc',
@@ -421,8 +422,8 @@ export default function AllOrders() {
           </Box>
 
           {/* فیلتر وضعیت */}
-          <Box sx={{ mb: 2 }}>
-            <FormControl sx={{ minWidth: '100%', backgroundColor: '#FFFFFF', borderRadius: '8px' }}>
+          <Box sx={{ mb: 2.5 }}>
+            <FormControl sx={{ minWidth: '100%', backgroundColor: '#fff', borderRadius: '14px', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#dce8e1' }, '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#08784f' } }}>
               <InputLabel sx={{ fontFamily: 'IranYekan, sans-serif' }}>وضعیت</InputLabel>
               <Select
                 value={statusFilter}
@@ -446,52 +447,48 @@ export default function AllOrders() {
           </Box>
 
           {isLoading ? (
-            <Typography sx={{ textAlign: 'center', fontFamily: 'IranYekan, sans-serif' }}>
-              در حال بارگذاری...
-            </Typography>
+            <Card sx={{ borderRadius: '18px', textAlign: 'center' }}><CardContent sx={{ py: 5 }}><Typography sx={{ color: '#65746c', fontFamily: 'IranYekan, sans-serif' }}>در حال بارگذاری...</Typography></CardContent></Card>
           ) : orders.length === 0 ? (
-            <Typography sx={{ textAlign: 'center', fontFamily: 'IranYekan, sans-serif' }}>
-              سفارشی یافت نشد
-            </Typography>
+            <Card sx={{ borderRadius: '18px', textAlign: 'center' }}><CardContent sx={{ py: 5 }}><Typography sx={{ color: '#65746c', fontFamily: 'IranYekan, sans-serif' }}>سفارشی یافت نشد</Typography></CardContent></Card>
           ) : (
             orders.map((order) => (
               <Card
                 key={order.id}
                 elevation={8}
                 sx={{
-                  borderRadius: 4,
-                  background: 'linear-gradient(180deg, #E5E9ED 0%, #00784a 100%)',
-                  color: 'white',
-                  overflow: 'visible',
-                  mb: 2,
+                  borderRadius: '22px',
+                  background: '#fff',
+                  color: '#17231e',
+                  overflow: 'hidden',
+                  mb: 1.5,
                 }}
               >
-                <CardContent sx={{ p: 1 }}>
+                <CardContent sx={{ p: { xs: 2.25, sm: 3 } }}>
                   {/* Header Section */}
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 4 }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2.5 }}>
                     <Box sx={{ textAlign: 'right' }}>
-                      <Typography variant="body2" sx={{ color: '#595959', mb: 0.5, fontFamily: 'IranYekan, sans-serif' }}>
+                      <Typography variant="body2" sx={{ color: '#65746c', mb: 0.5, fontFamily: 'IranYekan, sans-serif' }}>
                         مرسوله ارسالی
                       </Typography>
-                      <Typography variant="h6" sx={{ fontFamily: 'monospace', color: '#000000' }}>
+                      <Typography variant="h6" sx={{ fontFamily: 'monospace', color: '#17231e', fontWeight: 800 }}>
                         #p-{order.id}
                       </Typography>
                     </Box>
                     <Box>
-                      <Typography sx={{ fontWeight: 500, mb: 0.5, fontSize: '14px', color: '#000000', fontFamily: 'IranYekan, sans-serif' }}>
+                      <Typography sx={{ fontWeight: 600, mb: 0.5, fontSize: '12px', color: '#65746c', fontFamily: 'IranYekan, sans-serif' }}>
                         {formatPersianDate(order.created_at)}
                       </Typography>
                     </Box>
                   </Box>
 
                   {/* Order Details */}
-                  <Box sx={{ mb: 4, textAlign: 'right' }}>
-                    <Typography sx={{ fontSize: '14px', fontFamily: 'IranYekan, sans-serif' }}>
+                  <Box sx={{ mb: 2.5, textAlign: 'right', gap: 0.75, display: 'flex', flexDirection: 'column' }}>
+                    <Typography sx={{ fontSize: '13px', lineHeight: 1.9, color: '#65746c', fontFamily: 'IranYekan, sans-serif' }}>
                       آدرس: {order.address_details}{' '}
                       {order.address_alley && <span> کوچه {order.address_alley.replace('کوچه', '')}</span>}
                       {order.address_plate && <span> پلاک {order.address_plate.replace('پلاک', '')}</span>}
                     </Typography>
-                    <Typography sx={{ fontSize: '14px', fontFamily: 'IranYekan, sans-serif' }}>
+                    <Typography sx={{ fontSize: '13px', color: '#65746c', fontFamily: 'IranYekan, sans-serif' }}>
                       حمل و نقل: {order?.vehicle_type_name || 'نامشخص'}
                     </Typography>
                   </Box>
@@ -499,12 +496,13 @@ export default function AllOrders() {
                   {/* Progress Stepper */}
                   <Box
                     sx={{
-                      mb: 6,
+                      mb: 3,
                       direction: 'rtl',
                       px: 2,
-                      backgroundColor: '#00784aED',
-                      p: '10px',
-                      borderRadius: '26px',
+                      backgroundColor: '#f4f8f5',
+                      p: '12px 8px',
+                      border: '1px solid #e1ece5',
+                      borderRadius: '18px',
                     }}
                   >
                     <Stepper
@@ -517,7 +515,7 @@ export default function AllOrders() {
                           position: 'relative',
                         },
                         '& .MuiStepLabel-label': {
-                          color: 'white',
+                          color: '#65746c',
                           fontWeight: 500,
                           fontSize: '0.6rem',
                           mt: 1.5,
@@ -527,11 +525,11 @@ export default function AllOrders() {
                           fontFamily: 'IranYekan, sans-serif',
                         },
                         '& .MuiStepLabel-label.Mui-completed': {
-                          color: 'white',
+                          color: '#08784f',
                           fontWeight: 600,
                         },
                         '& .MuiStepLabel-label.Mui-active': {
-                          color: 'white',
+                          color: '#08784f',
                           fontWeight: 600,
                         },
                         '& .MuiStep-root': {
@@ -562,7 +560,7 @@ export default function AllOrders() {
                   {/* Bottom Section */}
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 1 }}>
                     <Box sx={{ textAlign: 'left' }}>
-                      <Typography sx={{ fontWeight: 'bold', fontSize: '16px', fontFamily: 'IranYekan, sans-serif' }}>
+                      <Typography sx={{ fontWeight: 800, fontSize: '14px', color: '#08784f', fontFamily: 'IranYekan, sans-serif' }}>
                         مبلغ {Number(order.total_amount).toLocaleString('fa-IR')} تومان
                       </Typography>
                     </Box>
@@ -573,17 +571,15 @@ export default function AllOrders() {
                             variant="contained"
                             onClick={() => handleOpenCollectModal(order.id)}
                             sx={{
-                              bgcolor: '#4caf50',
+                              bgcolor: '#08784f',
                               color: '#fff',
                               fontWeight: 600,
                               px: 2,
                               py: 1,
-                              borderRadius: 8,
-                              boxShadow: 3,
+                              borderRadius: 2,
+                              boxShadow: 'none',
                               '&:hover': {
-                                bgcolor: '#45a049',
-                                transform: 'translateY(-2px)',
-                                boxShadow: 6,
+                                bgcolor: '#075c3e',
                               },
                               transition: 'all 0.2s ease',
                               fontFamily: 'IranYekan, sans-serif',
@@ -620,17 +616,15 @@ export default function AllOrders() {
                           variant="contained"
                           onClick={() => handleOpenPackroModal(order.id)}
                           sx={{
-                            bgcolor: '#FFC107',
-                            color: '#fff',
+                            bgcolor: '#f4c400',
+                            color: '#17231e',
                             fontWeight: 600,
                             px: 2,
                             py: 1,
-                            borderRadius: 8,
-                            boxShadow: 3,
+                            borderRadius: 2,
+                            boxShadow: 'none',
                             '&:hover': {
-                              bgcolor: '#FFB300',
-                              transform: 'translateY(-2px)',
-                              boxShadow: 6,
+                              bgcolor: '#ddb000',
                             },
                             transition: 'all 0.2s ease',
                             fontFamily: 'IranYekan, sans-serif',
@@ -644,17 +638,15 @@ export default function AllOrders() {
                           variant="contained"
                           onClick={() => handleOpenCarrierModal(order.id)}
                           sx={{
-                            bgcolor: '#fbd700',
-                            color: '#fff',
+                            bgcolor: '#f4c400',
+                            color: '#17231e',
                             fontWeight: 600,
                             px: 2,
                             py: 1,
-                            borderRadius: 8,
-                            boxShadow: 3,
+                            borderRadius: 2,
+                            boxShadow: 'none',
                             '&:hover': {
-                              bgcolor: '#fbd700',
-                              transform: 'translateY(-2px)',
-                              boxShadow: 6,
+                              bgcolor: '#ddb000',
                             },
                             transition: 'all 0.2s ease',
                             fontFamily: 'IranYekan, sans-serif',
@@ -667,17 +659,15 @@ export default function AllOrders() {
                         variant="contained"
                         onClick={() => handleDetailsClick(order.id)}
                         sx={{
-                          bgcolor: 'white',
-                          color: '#1e293b',
+                          bgcolor: '#fff',
+                          color: '#08784f',
                           fontWeight: 600,
                           px: 2,
                           py: 1,
-                          borderRadius: 8,
-                          boxShadow: 3,
+                          borderRadius: 2,
+                          boxShadow: 'none',
                           '&:hover': {
-                            bgcolor: '#f8fafc',
-                            transform: 'translateY(-2px)',
-                            boxShadow: 6,
+                            bgcolor: '#e6f4ee',
                           },
                           transition: 'all 0.2s ease',
                           fontFamily: 'IranYekan, sans-serif',

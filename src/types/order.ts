@@ -19,6 +19,10 @@ export interface Order {
   user_mobile: string;
   user_first_name: string;
   user_last_name: string;
+  /** نام شرکتِ مشتری؛ برای مشتری حقیقی رشته‌ی خالی است. */
+  user_company_name: string;
+  /** مجموع تعداد بسته‌های سفارش. */
+  total_quantity: number;
   is_in_person_pickup:boolean;
   carrier_type_title: string;
   carrier_type_text_display: string;
@@ -35,12 +39,17 @@ export interface Order {
     quantity: number;
     packaging_quantity: number;
   }>;
+  /** برای مشتری فقط نام و تصویر اختیاری برمی‌گردد؛ شماره موبایل هرگز عمومی نیست. */
   carrier: null | {
     id: number;
-    mobile: string;
-    profile: {
+    first_name?: string;
+    last_name?: string;
+    profile_image?: string | null;
+    mobile?: string;
+    profile?: {
       first_name: string;
       last_name: string;
+      profile_image?: string | null;
       mobile: string;
       verified_phone: boolean;
       roles: Array<{ id: number; name: string }>;

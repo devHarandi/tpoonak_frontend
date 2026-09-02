@@ -19,7 +19,7 @@ import {
   DialogTitle,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { Check } from '@mui/icons-material';
+import { Check, ReceiptLongOutlined } from '@mui/icons-material';
 import Header from '@/components/common/Header';
 import AppFrame from '@/components/common/AppFrame';
 import CustomBottomNavigation from '@/components/common/CustomBottomNavigation';
@@ -27,6 +27,7 @@ import { getOrders, updateOrderStatus } from '@/services/order';
 import { Order } from '@/types/order';
 import styles from '../components/feature/styles/Home.module.css';
 import PersianDate from 'persian-date';
+import PickupCountdown from '@/components/common/PickupCountdown';
 
 // تابع برای تبدیل تاریخ به شمسی
 const formatPersianDate = (dateStr: string) => {
@@ -69,10 +70,10 @@ const CustomConnector = styled(StepConnector)(({ theme }) => ({
     border: 0,
   },
   '&.Mui-completed .MuiStepConnector-line': {
-    backgroundColor: '#4caf50',
+    backgroundColor: '#08784f',
   },
   '&.Mui-active .MuiStepConnector-line': {
-    backgroundColor: status === 'canceled' ? '#dc2626' : '#4caf50',
+    backgroundColor: '#08784f',
   },
   '&.MuiStepConnector-root': {
     right: 'calc(-50% + 12px)',
@@ -89,7 +90,7 @@ const CustomStepIcon = styled('div')<{ active?: boolean; completed?: boolean; is
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  backgroundColor: isCanceled ? '#dc2626' : completed || active ? '#4caf50' : '#e0e0e0',
+  backgroundColor: isCanceled ? '#c9372c' : completed || active ? '#08784f' : '#dce6e0',
   color: completed || active || isCanceled ? '#fff' : '#999',
   fontSize: '0.75rem',
   fontWeight: 'bold',
@@ -189,77 +190,85 @@ export default function MyOrders() {
         className={styles.container}
         sx={{
           textAlign: 'right',
-          minHeight: '100vh',
+          minHeight: 'calc(100dvh - 68px)',
           overflowY: 'auto',
-          pb: 10,
-          pt: 2,
+          pb: 14,
+          pt: 2.5,
           display: 'flex',
           flexDirection: 'column',
-          bgcolor: '#f5f5f5',
+          bgcolor: 'transparent',
           direction: 'rtl',
         }}
       >
-        <Box sx={{ p: 1, flex: 1 }}>
+        <Box sx={{ px: 2, flex: 1 }}>
           {isLoading ? (
-            <Typography sx={{ textAlign: 'center', fontFamily: 'IranYekan, sans-serif' }}>
-              در حال بارگذاری...
-            </Typography>
+            <Card sx={{ p: 3, textAlign: 'center', borderRadius: '20px' }}>
+              <Typography sx={{ color: '#65746c', fontFamily: 'IranYekan, sans-serif' }}>در حال بارگذاری...</Typography>
+            </Card>
           ) : orders.length === 0 ? (
-            <Typography sx={{ textAlign: 'center', fontFamily: 'IranYekan, sans-serif' }}>
-              سفارشی یافت نشد
-            </Typography>
+            <Card sx={{ p: 3, textAlign: 'center', borderRadius: '20px' }}>
+              <ReceiptLongOutlined sx={{ color: '#08784f', fontSize: 34, mb: 1 }} />
+              <Typography sx={{ color: '#17231e', fontWeight: 800, fontFamily: 'IranYekan, sans-serif' }}>هنوز سفارشی ثبت نکرده‌اید</Typography>
+              <Typography sx={{ color: '#65746c', fontSize: 12, mt: 0.75, fontFamily: 'IranYekan, sans-serif' }}>با ثبت اولین مرسوله، وضعیت آن را همین‌جا دنبال کنید.</Typography>
+            </Card>
           ) : (
             orders.map((order) => (
               <Card
                 key={order.id}
                 elevation={8}
                 sx={{
-                  borderRadius: 4,
-                  background: 'linear-gradient(180deg, #E5E9ED 0%, #00784a 100%)',
-                  color: 'white',
-                  overflow: 'visible',
-                  mb: 2,
+                  borderRadius: '22px',
+                  background: '#ffffff',
+                  color: '#17231e',
+                  overflow: 'hidden',
+                  mb: 1.5,
                 }}
               >
-                <CardContent sx={{ p: 1 }}>
+                <CardContent sx={{ p: 2.25 }}>
                   {/* Header Section */}
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 4 }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2.5, gap: 1 }}>
                     <Box sx={{ textAlign: 'right' }}>
-                      <Typography variant="body2" sx={{ color: '#595959', mb: 0.5, fontFamily: 'IranYekan, sans-serif' }}>
-                        مرسوله ارسالی
+                      <Typography variant="body2" sx={{ color: '#65746c', mb: 0.5, fontSize: 11, fontFamily: 'IranYekan, sans-serif' }}>
+                        مرسوله
                       </Typography>
-                      <Typography variant="h6" sx={{ fontFamily: 'monospace', color: '#000000' }}>
+                      <Typography variant="h6" sx={{ fontFamily: 'monospace', color: '#17231e', fontWeight: 800 }}>
                         #p-{order.id}
                       </Typography>
                     </Box>
                     <Box>
-                      <Typography sx={{ fontWeight: 500, mb: 0.5, fontSize: '14px', color: '#000000', fontFamily: 'IranYekan, sans-serif' }}>
+                      <Typography sx={{ fontWeight: 500, mb: 0.5, fontSize: '11px', color: '#65746c', fontFamily: 'IranYekan, sans-serif', textAlign: 'left' }}>
                         {formatPersianDate(order.created_at)}
                       </Typography>
                     </Box>
                   </Box>
 
                   {/* Order Details */}
-                  <Box sx={{ mb: 4, textAlign: 'right' }}>
-                    <Typography sx={{ fontSize: '14px', fontFamily: 'IranYekan, sans-serif' }}>
+                  <Box sx={{ mb: 2.5, textAlign: 'right' }}>
+                    <Typography sx={{ fontSize: '12px', color: '#34483e', lineHeight: 1.9, fontFamily: 'IranYekan, sans-serif' }}>
                       آدرس: {order.address_details}
                       {order.address_alley && <span> کوچه {order.address_alley.replace('کوچه', '')}</span>}
                       {order.address_plate && <span> پلاک  {order.address_plate.replace('پلاک', '')}</span>}
                     </Typography>
-                    <Typography sx={{ fontSize: '14px', fontFamily: 'IranYekan, sans-serif' }}>
+                    <Typography sx={{ mt: 0.5, fontSize: '12px', color: '#65746c', fontFamily: 'IranYekan, sans-serif' }}>
                       حمل و نقل: {order?.vehicle_type_name || 'نامشخص'}
                     </Typography>
                   </Box>
 
+                  {/* پس از تأیید جمع‌آوری، تا زمان جمع‌آوریِ واقعی شمارش معکوس نشان داده می‌شود */}
+                  {order.status === 'collected' && (
+                    <PickupCountdown collectedAt={order.collected_at} />
+                  )}
+
                   {/* Progress Stepper */}
                   <Box
                     sx={{
-                      mb: 6,
+                      mb: 3,
                       direction: 'rtl',
-                      px: 2,
-                      backgroundColor: '#00784aED',
-                      p: '10px',
-                      borderRadius: '26px',
+                      px: 1,
+                      backgroundColor: '#f4f8f5',
+                      p: '12px 8px',
+                      border: '1px solid #e1eae5',
+                      borderRadius: '18px',
                     }}
                   >
                     <Stepper
@@ -272,9 +281,9 @@ export default function MyOrders() {
                           position: 'relative',
                         },
                         '& .MuiStepLabel-label': {
-                          color: 'white',
+                          color: '#65746c',
                           fontWeight: 500,
-                          fontSize: '0.6rem',
+                          fontSize: '0.58rem',
                           mt: 1.5,
                           textAlign: 'center',
                           maxWidth: '80px',
@@ -282,11 +291,11 @@ export default function MyOrders() {
                           fontFamily: 'IranYekan, sans-serif',
                         },
                         '& .MuiStepLabel-label.Mui-completed': {
-                          color: 'white',
+                          color: '#08784f',
                           fontWeight: 600,
                         },
                         '& .MuiStepLabel-label.Mui-active': {
-                          color: 'white',
+                          color: '#08784f',
                           fontWeight: 600,
                         },
                         '& .MuiStep-root': {
@@ -315,26 +324,28 @@ export default function MyOrders() {
                   </Box>
 
                   {/* Bottom Section */}
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 1 }}>
                     <Box sx={{ textAlign: 'left' }}>
-                      <Typography sx={{ fontWeight: 'bold', fontSize: '16px', fontFamily: 'IranYekan, sans-serif' }}>
-                        مبلغ {Number(order.total_amount).toLocaleString('fa-IR')} تومان
+                      <Typography sx={{ fontWeight: 'bold', fontSize: '13px', whiteSpace: 'nowrap', color: '#08784f', fontFamily: 'IranYekan, sans-serif' }}>
+                        {Number(order.total_amount).toLocaleString('fa-IR')} تومان
                       </Typography>
                     </Box>
-                    <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                       <Button
                         variant="contained"
                         onClick={() => handleDetailsClick(order.id, order.status)}
                         sx={{
-                          bgcolor: 'white',
-                          color: '#1e293b',
+                          bgcolor: '#08784f',
+                          color: '#ffffff',
                           fontWeight: 600,
-                          px: 4,
-                          py: 1.5,
+                          fontSize: '13px',
+                          whiteSpace: 'nowrap',
+                          px: 2,
+                          py: 1.2,
                           borderRadius: 8,
                           boxShadow: 3,
                           '&:hover': {
-                            bgcolor: '#f8fafc',
+                            bgcolor: '#075c3e',
                             transform: 'translateY(-2px)',
                             boxShadow: 6,
                           },
@@ -344,19 +355,24 @@ export default function MyOrders() {
                       >
                         جزئیات بیشتر
                       </Button>
-                      {/* {order.status === 'pending' && (
+                      {/* لغو فقط تا قبل از تأیید جمع‌آوری ممکن است — سرور هم همین را اعمال می‌کند */}
+                      {order.status === 'pending' && (
                         <Button
                           variant="outlined"
                           onClick={() => handleCancelClick(order.id)}
                           disabled={isLoading}
                           sx={{
+                            bgcolor: '#ffffff',
                             borderColor: '#dc2626',
                             color: '#dc2626',
                             fontWeight: 600,
-                            px: 4,
-                            py: 1.5,
+                            fontSize: '13px',
+                            whiteSpace: 'nowrap',
+                            px: 2,
+                            py: 1.2,
                             borderRadius: 8,
                             '&:hover': {
+                              bgcolor: '#fff5f5',
                               borderColor: '#b91c1c',
                               color: '#b91c1c',
                               transform: 'translateY(-2px)',
@@ -368,7 +384,7 @@ export default function MyOrders() {
                         >
                           لغو سفارش
                         </Button>
-                      )} */}
+                      )}
                     </Box>
                   </Box>
                 </CardContent>

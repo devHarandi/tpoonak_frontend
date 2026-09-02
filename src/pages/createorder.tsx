@@ -337,12 +337,12 @@ useEffect(() => {
         sx={{
           direction: 'rtl',
           textAlign: 'right',
-          minHeight: '100%',
+          minHeight: 'calc(100dvh - 68px)',
           overflowY: 'auto',
           pb: 14,
           display: 'flex',
           flexDirection: 'column',
-          bgcolor: '#f5f5f5',
+          bgcolor: 'transparent',
         }}
       >
         <Box sx={{ p: 2, flexGrow: 1 }}>

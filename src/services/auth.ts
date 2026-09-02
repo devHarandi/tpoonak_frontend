@@ -16,7 +16,7 @@ export const getProfile = async (): Promise<ProfileResponse> => {
   return response.data;
 };
 
-export const updateProfile = async (data: UpdateProfileRequest): Promise<ProfileResponse> => {
+export const updateProfile = async (data: UpdateProfileRequest | FormData): Promise<ProfileResponse> => {
   const response = await patch<ProfileResponse>('/accounts/profile/update', data);
   return response.data;
 };

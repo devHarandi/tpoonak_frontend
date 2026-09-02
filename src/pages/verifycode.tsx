@@ -91,7 +91,16 @@ export default function VerifyCode() {
     try {
       const response = await verifyCode({ mobile: mobileFromUrl, code: codeString } as VerifyRequest);
       setToken(response.data.tokens.access);
-      router.push('/home');
+
+      // ثبت‌نام تازه: تا وقتی نام و نام خانوادگی پر نشده، کاربر به فرم تکمیل
+      // حساب می‌رود — همان‌جا نام شرکت/کمپانی هم پرسیده می‌شود.
+      const profile = response.data.user.profile;
+      const isProfileCompleted = Boolean(
+        profile?.first_name?.trim() &&
+        profile?.last_name?.trim() &&
+        (profile?.customer_type !== 'company' || profile?.company_name?.trim())
+      );
+      router.push(isProfileCompleted ? '/home' : '/editprofile?welcome=1');
     } catch (err: any) {
       setError(err.response?.data?.message || 'کد نامعتبر است. لطفاً دوباره تلاش کنید.');
       setOpenSnackbar(true);
@@ -155,8 +164,8 @@ export default function VerifyCode() {
           <Image
             src="/images/logo.png"
             alt="Tipax Logo"
-            width={200}
-            height={141}
+            width={120}
+            height={80}
             className={styles.icon}
           />
           <Typography
@@ -214,8 +223,8 @@ export default function VerifyCode() {
                   mx: 0.5,
                   '& .MuiOutlinedInput-root': {
                     backgroundColor: '#ffffff',
-                    border: '1px solid #000000',
-                    borderRadius: '8px',
+                border: '1px solid #dce6e0',
+                borderRadius: '14px',
                     '& fieldset': {
                       border: 'none',
                     },
@@ -241,7 +250,7 @@ export default function VerifyCode() {
               disabled={isLoading}
               sx={{
                 mb: 2,
-                color: '#fbd700',
+              color: '#08784f',
                 fontFamily: 'IranYekan, sans-serif',
                 textTransform: 'none',
               }}
@@ -257,20 +266,20 @@ export default function VerifyCode() {
             disabled={code.join('').length !== 4 || isLoading || isSubmitted}
             onClick={handleVerifyCode}
             sx={{
-              mt: '50px',
-              borderRadius: '8px',
-              padding: '10px 10px',
-              backgroundColor: '#00784a',
+              mt: 2,
+              borderRadius: '15px',
+              padding: '14px 10px',
+              backgroundColor: '#08784f',
               color: '#ffffff',
               fontFamily: 'IranYekan, sans-serif',
               fontWeight: 'bold',
               fontSize: '18px',
               textTransform: 'none',
               '&:hover': {
-                backgroundColor: '#005f3a',
+                backgroundColor: '#075c3e',
               },
               '&:disabled': {
-                backgroundColor: '#b3d1c2',
+                backgroundColor: '#b9d9ca',
                 color: '#ffffff',
               },
             }}
@@ -291,7 +300,7 @@ export default function VerifyCode() {
             onClick={handleBackToLogin}
             sx={{
               mt: 2,
-              color: '#666666',
+              color: '#65746c',
               fontFamily: 'IranYekan, sans-serif',
               textTransform: 'none',
             }}
@@ -311,10 +320,10 @@ export default function VerifyCode() {
             severity="error"
             sx={{
               fontFamily: 'IranYekan, sans-serif',
-              bgcolor: '#e6f0e9',
-              color: '#00784a',
+              bgcolor: '#fff1f1',
+              color: '#b42318',
               '& .MuiAlert-icon': {
-                color: '#00784a',
+                color: '#b42318',
               },
             }}
           >

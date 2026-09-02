@@ -125,10 +125,10 @@ export default function Login() {
       <Box className={styles.container}>
         <Box className={styles.header}>
           <Image
-            src="/images/logo.svg"
-            alt="Tipax Logo"
-            width={200}
-            height={141}
+            src="/images/logo.png"
+            alt="لوگوی تیپاکس پونک"
+            width={120}
+            height={80}
             className={styles.icon}
           />
           <Typography
@@ -174,7 +174,7 @@ export default function Login() {
                 : ''
             }
             disabled={isLoading}
-            placeholder="09123456789"
+            placeholder="09125949514"
           />
 
           <Typography
@@ -204,20 +204,20 @@ export default function Login() {
             disabled={isButtonDisabled || isLoading}
             onClick={handleLogin}
             sx={{
-              mt: '100px',
-              borderRadius: '8px',
-              padding: '10px 10px',
-              backgroundColor: '#00784a',
+              mt: 3,
+              borderRadius: '15px',
+              padding: '14px 10px',
+              backgroundColor: '#08784f',
               color: '#ffffff',
               fontFamily: 'IranYekan, sans-serif',
               fontWeight: 'bold',
               fontSize: '18px',
               textTransform: 'none',
               '&:hover': {
-                backgroundColor: '#005f3a', // رنگ تیره‌تر برای حالت hover
+                backgroundColor: '#075c3e',
               },
               '&:disabled': {
-                backgroundColor: '#b3d1c2', // رنگ روشن‌تر برای حالت غیرفعال
+                backgroundColor: '#b9d9ca',
                 color: '#ffffff',
               },
             }}
@@ -244,10 +244,10 @@ export default function Login() {
             severity="error"
             sx={{
               fontFamily: 'IranYekan, sans-serif',
-              bgcolor: '#e6f0e9', // پس‌زمینه روشن متناسب با سبز
-              color: '#00784a',
+              bgcolor: '#fff1f1',
+              color: '#b42318',
               '& .MuiAlert-icon': {
-                color: '#00784a',
+                color: '#b42318',
               },
             }}
           >

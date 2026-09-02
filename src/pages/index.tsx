@@ -98,14 +98,14 @@ export default function Home() {
           <Button
             href="/login"
             sx={{
-              backgroundColor: '#00784a',
+              backgroundColor: '#08784f',
               color: '#fff',
               px: 3,
               py: 1,
-              borderRadius: 6,
-              boxShadow: 2,
+              borderRadius: 14,
+              boxShadow: 'none',
               width: '100%',
-              '&:hover': { backgroundColor: '#E5E9ED', transform: 'translateY(-2px)' },
+              '&:hover': { backgroundColor: '#075c3e' },
             }}
           >
             ورود
@@ -158,7 +158,7 @@ export default function Home() {
         <Toolbar sx={{ maxWidth: 1200, width: '100%', mx: 'auto', px: { xs: 2, sm: 3 } }}>
           <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => scrollToSection('hero')}>
             <img src="/images/logo.svg" alt="لوگوی تیپاکس پونک" style={{ height: 32 }} />
-            <Typography variant="h6" sx={{ ml: 1, color: '#00784a', fontWeight: 700 }}>
+            <Typography variant="h6" sx={{ ml: 1, color: '#08784f', fontWeight: 800 }}>
               تیپاکس پونک
             </Typography>
           </Box>
@@ -175,7 +175,7 @@ export default function Home() {
                 color={currentSection === item.id ? 'primary' : 'inherit'}
                 onClick={() => scrollToSection(item.id as SectionId)}
                 sx={{
-                  color: currentSection === item.id ? 'primary.main' : '#00784a',
+                  color: currentSection === item.id ? '#075c3e' : '#08784f',
                   fontWeight: currentSection === item.id ? 'bold' : 'medium',
                   px: 2,
                   py: 1,
@@ -190,13 +190,13 @@ export default function Home() {
               variant="contained"
               href="/login"
               sx={{
-                backgroundColor: '#00784a',
+                backgroundColor: '#08784f',
                 color: '#fff',
                 px: 3,
                 py: 1,
-                borderRadius: 6,
-                boxShadow: 2,
-                '&:hover': { backgroundColor: '#E5E9ED', transform: 'translateY(-2px)' },
+                borderRadius: 14,
+                boxShadow: 'none',
+                '&:hover': { backgroundColor: '#075c3e' },
               }}
             >
               ورود
@@ -204,7 +204,7 @@ export default function Home() {
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
             <IconButton color="inherit" edge="end" onClick={handleDrawerToggle}>
-              <MenuIcon sx={{ color: '#00784a' }} />
+              <MenuIcon sx={{ color: '#08784f' }} />
             </IconButton>
           </Box>
         </Toolbar>
@@ -219,7 +219,7 @@ export default function Home() {
         data-section
         sx={{
           minHeight: '80vh',
-          background: 'linear-gradient(180deg, #E5E9ED 0%, #00784a 100%)',
+          background: 'linear-gradient(135deg, #075c3e 0%, #08784f 68%, #0f8c5d 100%)',
           display: 'flex',
           alignItems: 'center',
           pt: { xs: 10, md: 12 },
@@ -349,7 +349,7 @@ export default function Home() {
       <Box
         id="features"
         data-section
-        sx={{ py: 10, background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)' }}
+        sx={{ py: 10, backgroundColor: '#f3f8f5' }}
       >
         <Container maxWidth="lg">
           <Typography variant="h3" sx={{ textAlign: 'center', mb: 2, color: '#00784a', fontSize: { xs: 24, md: 36 } }}>
@@ -402,7 +402,7 @@ export default function Home() {
       <Box
         id="cta"
         data-section
-        sx={{ py: 10, background: 'linear-gradient(180deg, #00784a 0%, #E5E9ED 100%)', color: '#fff', textAlign: 'center' }}
+        sx={{ py: 10, backgroundColor: '#075c3e', color: '#fff', textAlign: 'center' }}
       >
         <Container maxWidth="lg">
           <Typography variant="h3" sx={{ mb: 2, fontSize: { xs: 24, md: 36 } }}>

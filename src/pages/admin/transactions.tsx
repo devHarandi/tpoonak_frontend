@@ -92,14 +92,14 @@ export default function Transactions() {
       
       <Box sx={{
         textAlign: 'right',
-        minHeight: '100%',
+        minHeight: 'calc(100dvh - 68px)',
         overflowY: 'auto',
-        pb: 10,
+        pb: 14,
         display: 'flex',
         flexDirection: 'column',
-        bgcolor: '#f5f5f5',
+        bgcolor: 'transparent',
         direction: 'rtl',
-        pt: 2,
+        pt: 2.5,
         pr: 2,
         pl: 2,
       }}>
@@ -107,7 +107,7 @@ export default function Transactions() {
           variant="h6" 
           sx={{ 
             fontFamily: 'IranYekan, sans-serif',
-            color: '#00784a',
+            color: '#08784f',
             fontWeight: 'bold',
             textAlign: 'right',
             mb: 3
@@ -118,7 +118,7 @@ export default function Transactions() {
         <Typography 
           sx={{ 
             fontFamily: 'IranYekan, sans-serif',
-            color: '#00784a',
+            color: '#08784f',
             fontWeight: 'bold',
             textAlign: 'right',
             mb: 3
@@ -137,51 +137,51 @@ export default function Transactions() {
               key={transaction.id}
               elevation={8}
               sx={{
-                borderRadius: 4,
-                background: 'linear-gradient(180deg,rgb(108, 124, 139) 0%, #00784a 100%)',
-                color: 'white',
-                mb: 3,
-                overflow: 'visible',
+                borderRadius: '22px',
+                background: '#fff',
+                color: '#17231e',
+                mb: 1.5,
+                overflow: 'hidden',
               }}
             >
               <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
-                    <Typography sx={{ fontSize: '14px', fontFamily: 'IranYekan, sans-serif', color: '#fff', fontWeight: 'bold', textAlign: 'right' }}>
+                    <Typography sx={{ fontSize: '14px', fontFamily: 'IranYekan, sans-serif', color: '#17231e', fontWeight: 'bold', textAlign: 'right' }}>
                       شناسه تراکنش: #{transaction.id}
                     </Typography>
-                    <Typography sx={{ fontSize: '14px', fontFamily: 'IranYekan, sans-serif', color: '#fff', textAlign: 'right' }}>
+                    <Typography sx={{ fontSize: '14px', fontFamily: 'IranYekan, sans-serif', color: '#65746c', textAlign: 'right' }}>
                       {formatPersianDate(transaction.created_at)}
                     </Typography>
                   </Box>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Typography sx={{ fontSize: '14px', fontFamily: 'IranYekan, sans-serif', color: '#fff', textAlign: 'right' }}>
+                    <Typography sx={{ fontSize: '14px', fontFamily: 'IranYekan, sans-serif', color: '#65746c', textAlign: 'right' }}>
                       کاربر: {getDisplayName(transaction.wallet_balance.user)}
                     </Typography>
                   </Box>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <AccountBalance sx={{ color: transaction.wallet_balance.role.name === 'Customer' ? '#4caf50' : transaction.wallet_balance.role.name === 'Collector' ? '#fbd700' : '#00784a', fontSize: 18 }} />
-                    <Typography sx={{ fontSize: '14px', fontFamily: 'IranYekan, sans-serif', color: '#fff', textAlign: 'right' }}>
+                    <Typography sx={{ fontSize: '14px', fontFamily: 'IranYekan, sans-serif', color: '#65746c', textAlign: 'right' }}>
                       نقش: {transaction.wallet_balance.role.name === 'Customer' ? 'مشتری' : transaction.wallet_balance.role.name === 'Collector' ? 'حمل‌کننده' : 'ادمین'}
                     </Typography>
                   </Box>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Typography sx={{ fontSize: '14px', fontFamily: 'IranYekan, sans-serif', color: '#fff', fontWeight: 'bold', textAlign: 'right' }}>
+                    <Typography sx={{ fontSize: '14px', fontFamily: 'IranYekan, sans-serif', color: '#08784f', fontWeight: 'bold', textAlign: 'right' }}>
                       مبلغ: {Number(transaction.amount).toLocaleString('fa-IR')} تومان
                     </Typography>
                   </Box>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Typography sx={{ fontSize: '14px', fontFamily: 'IranYekan, sans-serif', color: '#fff', textAlign: 'right' }}>
+                    <Typography sx={{ fontSize: '14px', fontFamily: 'IranYekan, sans-serif', color: '#65746c', textAlign: 'right' }}>
                       نوع تراکنش: {transaction.transaction_type === 'deposit' ? 'واریز' : 'پرداخت'}
                     </Typography>
                   </Box>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Typography sx={{ fontSize: '14px', fontFamily: 'IranYekan, sans-serif', color: '#fff', textAlign: 'right' }}>
+                    <Typography sx={{ fontSize: '14px', fontFamily: 'IranYekan, sans-serif', color: '#65746c', textAlign: 'right' }}>
                       توضیحات: {transaction.description}
                     </Typography>
                   </Box>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Typography sx={{ fontSize: '14px', fontFamily: 'IranYekan, sans-serif', color: '#fff', textAlign: 'right' }}>
+                    <Typography sx={{ fontSize: '14px', fontFamily: 'IranYekan, sans-serif', color: '#65746c', textAlign: 'right' }}>
                       موجودی کیف پول: {Number(transaction.wallet_balance.balance).toLocaleString('fa-IR')} تومان
                     </Typography>
                   </Box>

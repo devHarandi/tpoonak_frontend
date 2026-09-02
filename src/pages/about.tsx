@@ -38,16 +38,16 @@ export default function About() {
       
       <Box sx={{
         textAlign: 'right',
-        minHeight: '100%',
+        minHeight: 'calc(100dvh - 68px)',
         overflowY: 'auto',
-        pb: 10,
+        pb: 14,
         display: 'flex',
         flexDirection: 'column',
-        bgcolor: '#f5f5f5',
+        bgcolor: 'transparent',
         direction: 'rtl',
         pl: 2,
         pr: 2,
-        pt:2
+        pt: 2.5
       }}>
         <Container maxWidth="lg">
           {/* Introduction Section */}
@@ -56,7 +56,7 @@ export default function About() {
               variant="h4" 
               sx={{ 
                 fontFamily: 'IranYekan, sans-serif',
-                color: '#00784a',
+                color: '#08784f',
                 fontWeight: 'bold',
                 textAlign: 'right',
                 mb: 2,
@@ -86,7 +86,7 @@ export default function About() {
               variant="h4" 
               sx={{ 
                 fontFamily: 'IranYekan, sans-serif',
-                color: '#00784a',
+                color: '#08784f',
                 fontWeight: 'bold',
                 textAlign: 'right',
                 mb: 2,
@@ -98,15 +98,14 @@ export default function About() {
             <Grid container spacing={4} justifyContent="center">
               <Grid size={12}>
                 <Card sx={{ 
-                  p: 4, 
-                  borderRadius: '16px', 
-                  boxShadow: 3, 
-                  backgroundColor: '#FBFBFB' 
+                  p: { xs: 2, sm: 4 },
+                  borderRadius: '20px',
+                  backgroundColor: '#fff'
                 }}>
                   <CardContent sx={{ p: 2 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 3, gap: 2 }}>
-                      <LocationOnIcon sx={{ color: '#00784a', fontSize: 28 }} />
-                      <Typography variant="h6" sx={{ fontFamily: 'IranYekan, sans-serif', color: '#00784a', fontWeight: 600 }}>
+                      <LocationOnIcon sx={{ color: '#08784f', fontSize: 28 }} />
+                      <Typography variant="h6" sx={{ fontFamily: 'IranYekan, sans-serif', color: '#08784f', fontWeight: 700 }}>
                         آدرس
                       </Typography>
                     </Box>
@@ -114,8 +113,8 @@ export default function About() {
                       جنت آباد - شاهین شمالی - جنب معاینه فنی آبشناسان - لاله هشتم - کوچه شبنم - پلاک ۴
                     </Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, gap: 2 }}>
-                      <PhoneIcon sx={{ color: '#00784a', fontSize: 28 }} />
-                      <Typography variant="h6" sx={{ fontFamily: 'IranYekan, sans-serif', color: '#00784a', fontWeight: 600 }}>
+                      <PhoneIcon sx={{ color: '#08784f', fontSize: 28 }} />
+                      <Typography variant="h6" sx={{ fontFamily: 'IranYekan, sans-serif', color: '#08784f', fontWeight: 700 }}>
                         شماره تماس
                       </Typography>
                     </Box>
@@ -123,8 +122,8 @@ export default function About() {
                       021-44411332
                     </Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, gap: 2 }}>
-                      <EmailIcon sx={{ color: '#00784a', fontSize: 28 }} />
-                      <Typography variant="h6" sx={{ fontFamily: 'IranYekan, sans-serif', color: '#00784a', fontWeight: 600 }}>
+                      <EmailIcon sx={{ color: '#08784f', fontSize: 28 }} />
+                      <Typography variant="h6" sx={{ fontFamily: 'IranYekan, sans-serif', color: '#08784f', fontWeight: 700 }}>
                         ایمیل
                       </Typography>
                     </Box>
@@ -139,14 +138,14 @@ export default function About() {
                         mt: 3,
                         borderRadius: '8px',
                         padding: '10px 10px',
-                        backgroundColor: '#00784a',
+                        backgroundColor: '#08784f',
                         color: '#ffffff',
                         fontFamily: 'IranYekan, sans-serif',
                         fontWeight: 'bold',
                         fontSize: '18px',
                         textTransform: 'none',
                         '&:hover': {
-                          backgroundColor: '#005f3a',
+                          backgroundColor: '#075c3e',
                         },
                         '&:disabled': {
                           backgroundColor: '#b3d1c2',

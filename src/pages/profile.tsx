@@ -9,10 +9,10 @@ import {
   Snackbar,
   Alert,
   Card,
+  Avatar,
 } from '@mui/material';
 import { styled, Theme } from '@mui/material/styles';
 import { ExitToApp } from '@mui/icons-material';
-import Image from 'next/image';
 import Header from '@/components/common/Header';
 import AppFrame from '@/components/common/AppFrame';
 import CustomBottomNavigation from '@/components/common/CustomBottomNavigation';
@@ -20,7 +20,6 @@ import { getProfile } from '@/services/auth';
 import { ProfileResponse } from '@/types/auth';
 import { removeToken } from '@/utils/storage';
 import styles from '../components/feature/styles/Home.module.css';
-import { Text } from 'react-native';
 
 // Styled Components
 const ProfileCard = styled(Card)(({ theme }) => ({
@@ -44,7 +43,7 @@ const BalanceCard = styled(Card, {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  backgroundColor: isNegative ? '#EA615D' : '#00784a',
+  backgroundColor: isNegative ? '#dc6b62' : '#08784f',
   width: '100%',
 }));
 
@@ -52,8 +51,8 @@ const InfoCard = styled(Card)(({ theme }) => ({
   margin: theme.spacing(2, 2, 1, 2),
   borderRadius: theme.spacing(2),
   boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-  backgroundColor: '#8AA1BC',
-  color: '#000',
+  backgroundColor: '#fff',
+  color: '#17231e',
 }));
 
 const LogoutButton = styled(Button)(({ theme }) => ({
@@ -114,12 +113,12 @@ export default function ProfilePage() {
         className={styles.container}
         sx={{
           textAlign: 'right',
-          minHeight: '100%',
+          minHeight: 'calc(100dvh - 68px)',
           overflowY: 'auto',
           pb: 16,
           display: 'flex',
           flexDirection: 'column',
-          bgcolor: '#f5f5f5',
+          bgcolor: 'transparent',
           direction: 'rtl',
         }}
       >
@@ -128,19 +127,30 @@ export default function ProfilePage() {
         {/* Profile Header */}
         <ProfileCard>
           <CardContent sx={{ textAlign: 'center', py: 3 }}>
-            <Image
-              src="/images/user-profile.svg"
-              alt="پروفایل کاربر"
-              width={100}
-              height={100}
-              style={{ borderRadius: '8px', objectFit: 'contain' }}
-            />
+            <Avatar
+              src={profile?.profile.profile_image || undefined}
+              alt="تصویر پروفایل"
+              sx={{
+                width: 104,
+                height: 104,
+                mx: 'auto',
+                mb: 2,
+                bgcolor: '#dcefe8',
+                color: '#08784f',
+                fontSize: '2rem',
+                fontWeight: 700,
+              }}
+            >
+              {profile
+                ? `${profile.profile.first_name.charAt(0)}${profile.profile.last_name.charAt(0)}`
+                : 'ت'}
+            </Avatar>
             <Typography
               variant="h6"
               component="h1"
               sx={{
                 fontWeight: 'bold',
-                color: '#333',
+                color: '#17231e',
                 mb: 1,
                 fontFamily: 'IranYekan, sans-serif',
               }}
@@ -184,18 +194,19 @@ export default function ProfilePage() {
                 {/* نوع مرسوله */}
                 <Box
                   sx={{
-                    backgroundColor: '#8AA1BC',
-                    borderRadius: '20px',
+                    backgroundColor: '#fff',
+                    border: '1px solid #e1eae5',
+                    borderRadius: '16px',
                     p: 2,
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
                   }}
                 >
-                  <Typography sx={{ color: '#000', fontSize: '14px' }}>
+                    <Typography sx={{ color: '#65746c', fontSize: '14px' }}>
                     نام
                   </Typography>
-                   <Typography sx={{ color: '#000', fontSize: '14px' }}>
+                   <Typography sx={{ color: '#17231e', fontSize: '14px', fontWeight: 700 }}>
                     {profile?.profile.first_name || '-'}
                   </Typography>
                 </Box>
@@ -204,38 +215,78 @@ export default function ProfilePage() {
                 {/* نوع مرسوله */}
                 <Box
                   sx={{
-                    backgroundColor: '#8AA1BC',
-                    borderRadius: '20px',
+                    backgroundColor: '#fff',
+                    border: '1px solid #e1eae5',
+                    borderRadius: '16px',
                     p: 2,
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
                   }}
                 >
-                  <Typography sx={{ color: '#000', fontSize: '14px' }}>
+                    <Typography sx={{ color: '#65746c', fontSize: '14px' }}>
                     نام خانوادگی
                   </Typography>
-                   <Typography sx={{ color: '#000', fontSize: '14px' }}>
+                   <Typography sx={{ color: '#17231e', fontSize: '14px', fontWeight: 700 }}>
                     {profile?.profile.last_name || '-'}
                   </Typography>
                 </Box>
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 1,mx:2 }}>
+          <Box
+            sx={{
+              backgroundColor: '#fff',
+              border: '1px solid #e1eae5',
+              borderRadius: '16px',
+              p: 2,
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <Typography sx={{ color: '#65746c', fontSize: '14px' }}>نوع حساب</Typography>
+            <Typography sx={{ color: '#17231e', fontSize: '14px', fontWeight: 700 }}>
+              {profile?.profile.customer_type === 'company' ? 'شرکت' : 'کاربر خانگی'}
+            </Typography>
+          </Box>
+        </Box>
+        {profile?.profile.customer_type === 'company' && (
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 1,mx:2 }}>
+            <Box
+              sx={{
+                backgroundColor: '#fff',
+                border: '1px solid #e1eae5',
+                borderRadius: '16px',
+                p: 2,
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <Typography sx={{ color: '#65746c', fontSize: '14px' }}>نام شرکت</Typography>
+              <Typography sx={{ color: '#17231e', fontSize: '14px', fontWeight: 700 }}>
+                {profile.profile.company_name || '-'}
+              </Typography>
+            </Box>
+          </Box>
+        )}
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 1,mx:2 }}>
                 {/* نوع مرسوله */}
                 <Box
                   sx={{
-                    backgroundColor: '#8AA1BC',
-                    borderRadius: '20px',
+                    backgroundColor: '#fff',
+                    border: '1px solid #e1eae5',
+                    borderRadius: '16px',
                     p: 2,
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
                   }}
                 >
-                  <Typography sx={{ color: '#000', fontSize: '14px' }}>
+                    <Typography sx={{ color: '#65746c', fontSize: '14px' }}>
                     موبایل
                   </Typography>
-                   <Typography sx={{ color: '#000', fontSize: '14px' }}>
+                   <Typography sx={{ color: '#17231e', fontSize: '14px', fontWeight: 700 }}>
                     {profile?.profile.mobile || '-'}
                   </Typography>
                 </Box>

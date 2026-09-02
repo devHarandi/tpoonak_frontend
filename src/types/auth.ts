@@ -11,6 +11,23 @@ export interface VerifyRequest {
   code: string;
 }
 
+export type CustomerType = 'individual' | 'company';
+
+export interface ProfileData {
+  first_name: string;
+  last_name: string;
+  customer_type: CustomerType;
+  company_name: string;
+  profile_image: string | null;
+  mobile: string;
+  verified_phone: boolean;
+  roles: Array<{
+    id: number;
+    name: string;
+  }>;
+  created_at?: string;
+}
+
 export interface VerifyResponse {
   message: string;
   status: number;
@@ -21,6 +38,9 @@ export interface VerifyResponse {
       profile: {
         first_name: string;
         last_name: string;
+        customer_type: CustomerType;
+        company_name: string;
+        profile_image: string | null;
         mobile: string;
         verified_phone: boolean;
         roles: Array<{
@@ -43,6 +63,9 @@ export interface ProfileResponse {
     profile: {
       first_name: string;
       last_name: string;
+      customer_type: CustomerType;
+      company_name: string;
+      profile_image: string | null;
       mobile: string;
       verified_phone: boolean;
       roles: Array<{
@@ -67,4 +90,7 @@ export interface UpdateProfileRequest {
   first_name: string;
   last_name: string;
   mobile: string;
+  customer_type: CustomerType;
+  /** نام شرکت — فقط برای مشتری شرکتی الزامی است. */
+  company_name?: string;
 }

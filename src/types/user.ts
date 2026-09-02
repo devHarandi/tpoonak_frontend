@@ -1,9 +1,14 @@
+import { CustomerType } from './auth';
+
 export interface User {
   id: number;
   mobile: string;
   profile: {
     first_name: string;
     last_name: string;
+    customer_type: CustomerType;
+    company_name: string;
+    profile_image: string | null;
     mobile: string;
     verified_phone: boolean;
     created_at:string;
@@ -79,6 +84,9 @@ export interface GetProfileResponse {
     profile: {
       first_name: string;
       last_name: string;
+      customer_type: CustomerType;
+      company_name: string;
+      profile_image: string | null;
       mobile: string;
       verified_phone: boolean;
       roles: Array<{ id: number; name: string }>;
@@ -97,6 +105,8 @@ export interface CreateUserRequest {
   mobile: string;
   first_name: string;
   last_name: string;
+  customer_type?: CustomerType;
+  company_name?: string;
   role_ids: number[];
 }
 

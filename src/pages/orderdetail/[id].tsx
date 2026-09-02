@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import {
   Box,
   Typography,
@@ -18,6 +18,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Avatar,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Check } from '@mui/icons-material';
@@ -32,8 +33,16 @@ import { GetProfileResponse } from '@/types/user';
 import styles from '../../components/feature/styles/Home.module.css';
 import PersianDate from 'persian-date';
 
-// Base URL برای تصاویر
-const BASE_URL = 'https://tpoonak.com/rest';
+// تصاویر رسانه‌ای از ریشه‌ی API می‌آیند، نه از مسیر قدیمی /rest.
+const API_ORIGIN = (process.env.NEXT_PUBLIC_API_URL || 'https://api.tpoonak.com')
+  .replace(/\/api\/?$/, '')
+  .replace(/\/+$/, '');
+
+const resolveMediaUrl = (value?: string | null) => {
+  if (!value) return '';
+  if (/^https?:\/\//i.test(value)) return value;
+  return `${API_ORIGIN}${value.startsWith('/') ? '' : '/'}${value}`;
+};
 
 // تابع برای تبدیل تاریخ به شمسی
 const formatPersianDate = (dateStr: string) => {
@@ -208,8 +217,16 @@ export default function OrderDetail() {
   };
 
   // هندلر تماس با جمع‌آورنده
+  // پاسخ سرور برای مشتری فقط {first_name,last_name} دارد و برای حمل‌کننده/ادمین
+  // ساختار کامل profile را — هر دو حالت را پوشش می‌دهیم.
+  const carrierFirstName = order?.carrier?.profile?.first_name ?? order?.carrier?.first_name ?? '';
+  const carrierLastName = order?.carrier?.profile?.last_name ?? order?.carrier?.last_name ?? '';
+  const carrierDisplayName = `${carrierFirstName} ${carrierLastName}`.trim() || 'نامشخص';
+  const carrierMobile = order?.carrier?.profile?.mobile ?? order?.carrier?.mobile ?? '';
+  const carrierImage = resolveMediaUrl(order?.carrier?.profile_image ?? order?.carrier?.profile?.profile_image);
+
   const handleCallCollector = () => {
-    const mobile = order?.carrier?.profile?.mobile;
+    const mobile = order?.carrier?.profile?.mobile ?? order?.carrier?.mobile;
     if (mobile) {
       window.location.href = `tel:${mobile}`;
     } else {
@@ -326,10 +343,10 @@ export default function OrderDetail() {
           className={styles.container}
           sx={{
             textAlign: 'center',
-            minHeight: '100%',
+            minHeight: 'calc(100dvh - 68px)',
             display: 'flex',
             flexDirection: 'column',
-            bgcolor: '#f5f5f5',
+            bgcolor: 'transparent',
             direction: 'rtl',
           }}
         >
@@ -350,10 +367,10 @@ export default function OrderDetail() {
           className={styles.container}
           sx={{
             textAlign: 'center',
-            minHeight: '100%',
+            minHeight: 'calc(100dvh - 68px)',
             display: 'flex',
             flexDirection: 'column',
-            bgcolor: '#f5f5f5',
+            bgcolor: 'transparent',
             direction: 'rtl',
           }}
         >
@@ -374,38 +391,39 @@ export default function OrderDetail() {
         className={styles.container}
         sx={{
           textAlign: 'right',
-          minHeight: '100%',
+          minHeight: 'calc(100dvh - 68px)',
           overflowY: 'auto',
-          pb: 10,
+          pb: 14,
+          pt: 2.5,
           display: 'flex',
           flexDirection: 'column',
-          bgcolor: '#f5f5f5',
+          bgcolor: 'transparent',
           direction: 'rtl',
         }}
       >
-        <Box sx={{ p: 1, flex: 1 }}>
+        <Box sx={{ px: 2, flex: 1 }}>
           <Card
             elevation={8}
             sx={{
-              borderRadius: 4,
-              background: 'linear-gradient(180deg, #E5E9ED 0%, #00784a 100%)',
-              color: 'white',
-              overflow: 'visible',
+              borderRadius: '22px',
+              background: '#fff',
+              color: '#17231e',
+              overflow: 'hidden',
             }}
           >
-            <CardContent sx={{ p: 1 }}>
+            <CardContent sx={{ p: { xs: 2.25, sm: 3 } }}>
               {/* Header Section */}
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 4 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2.5 }}>
                 <Box sx={{ textAlign: 'right' }}>
-                  <Typography variant="body2" sx={{ color: '#595959', mb: 0.5, fontFamily: 'IranYekan, sans-serif' }}>
+                  <Typography variant="body2" sx={{ color: '#65746c', mb: 0.5, fontFamily: 'IranYekan, sans-serif' }}>
                     مرسوله ارسالی
                   </Typography>
-                  <Typography variant="h6" sx={{ fontFamily: 'monospace', color: '#000000' }}>
+                  <Typography variant="h6" sx={{ fontFamily: 'monospace', color: '#17231e', fontWeight: 800 }}>
                     #p-{order.id}
                   </Typography>
                 </Box>
                 <Box>
-                  <Typography sx={{ fontWeight: 500, mb: 0.5, fontSize: '14px', color: '#000000', fontFamily: 'IranYekan, sans-serif' }}>
+                  <Typography sx={{ fontWeight: 600, mb: 0.5, fontSize: '12px', color: '#65746c', fontFamily: 'IranYekan, sans-serif' }}>
                     {formatPersianDate(order.created_at)}
                   </Typography>
                 </Box>
@@ -437,12 +455,13 @@ export default function OrderDetail() {
               {/* Progress Stepper */}
               <Box
                 sx={{
-                  mb: 6,
+                  mb: 3,
                   direction: 'rtl',
                   px: 2,
-                  backgroundColor: '#00784aED',
-                  p: '10px',
-                  borderRadius: '26px',
+                  backgroundColor: '#f4f8f5',
+                  p: '12px 8px',
+                  border: '1px solid #e1ece5',
+                  borderRadius: '18px',
                 }}
               >
                 <Stepper
@@ -455,7 +474,7 @@ export default function OrderDetail() {
                       position: 'relative',
                     },
                     '& .MuiStepLabel-label': {
-                      color: 'white',
+                      color: '#65746c',
                       fontWeight: 500,
                       fontSize: '0.6rem',
                       mt: 1.5,
@@ -465,11 +484,11 @@ export default function OrderDetail() {
                       fontFamily: 'IranYekan, sans-serif',
                     },
                     '& .MuiStepLabel-label.Mui-completed': {
-                      color: 'white',
+                      color: '#08784f',
                       fontWeight: 600,
                     },
                     '& .MuiStepLabel-label.Mui-active': {
-                      color: 'white',
+                      color: '#08784f',
                       fontWeight: 600,
                     },
                     '& .MuiStep-root': {
@@ -617,20 +636,28 @@ export default function OrderDetail() {
                     alignItems: 'center',
                   }}
                 >
-                  <Typography sx={{ color: '#000', fontWeight: 'bold', fontSize: '14px', fontFamily: 'IranYekan, sans-serif' }}>
-                    جمع‌آورنده: 
-                    {order.carrier && order.carrier.profile
-                      ? `${order.carrier.profile.first_name} ${order.carrier.profile.last_name}`
-                      : 'نامشخص'}
-                  </Typography>
-                  <Typography
-                    sx={{ color: '#000', fontWeight: 'bold', fontSize: '14px', fontFamily: 'IranYekan, sans-serif' }}
-                    onClick={() => handleCallCollector()}
-                  >
-                    موبایل: {order.carrier && order.carrier.profile
-                      ? `${order.carrier.profile.mobile}`
-                      : 'نامشخص'}
-                  </Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                    <Avatar
+                      src={carrierImage || undefined}
+                      alt={`تصویر ${carrierDisplayName}`}
+                      sx={{ width: 42, height: 42, bgcolor: '#dcefe8', color: '#00784a', fontWeight: 700 }}
+                    >
+                      {`${carrierFirstName.charAt(0)}${carrierLastName.charAt(0)}` || 'ج'}
+                    </Avatar>
+                    <Typography sx={{ color: '#000', fontWeight: 'bold', fontSize: '14px', fontFamily: 'IranYekan, sans-serif' }}>
+                      جمع‌آورنده: {carrierDisplayName}
+                    </Typography>
+                  </Box>
+                  {/* شماره‌ی جمع‌آورنده فقط برای حمل‌کننده و ادمین. سرور هم آن را
+                      برای مشتری اصلاً نمی‌فرستد؛ این شرط فقط لایه‌ی دوم است. */}
+                  {canUpload && carrierMobile && (
+                    <Typography
+                      sx={{ color: '#000', fontWeight: 'bold', fontSize: '14px', fontFamily: 'IranYekan, sans-serif' }}
+                      onClick={() => handleCallCollector()}
+                    >
+                      موبایل: {carrierMobile}
+                    </Typography>
+                  )}
                 </Box>
 
                 <Box
@@ -730,7 +757,7 @@ export default function OrderDetail() {
 
               {/* لیست عکس‌های بارگذاری‌شده */}
               <Box sx={{ mt: 3, textAlign: 'center' }}>
-                <Typography sx={{ color: 'white', fontWeight: 'bold', fontSize: '16px', mb: 2, fontFamily: 'IranYekan, sans-serif' }}>
+                <Typography sx={{ color: '#08784f', fontWeight: 800, fontSize: '16px', mb: 2, fontFamily: 'IranYekan, sans-serif' }}>
                   لیست عکس‌های بارگذاری‌شده
                 </Typography>
                 {order.images && order.images.length > 0 ? (
@@ -749,7 +776,7 @@ export default function OrderDetail() {
                         onClick={() => handleOpenImageModal(img.image)}
                       >
                         <Image
-                          src={`${BASE_URL}${img.image}`}
+                          src={resolveMediaUrl(img.image)}
                           alt={`عکس ${index + 1}`}
                           width={80}
                           height={80}
@@ -780,15 +807,15 @@ export default function OrderDetail() {
                     <Button
                       onClick={() => fileInputRef.current?.click()}
                       sx={{
-                        backgroundColor: '#FFB300',
-                        color: '#fff',
+                        backgroundColor: '#f4c400',
+                        color: '#17231e',
                         borderRadius: '20px',
                         px: 4,
                         py: 1.5,
                         fontWeight: 'bold',
                         fontFamily: 'IranYekan, sans-serif',
                         '&:hover': {
-                          backgroundColor: '#FFA000',
+                          backgroundColor: '#ddb000',
                         },
                       }}
                     >
@@ -800,12 +827,12 @@ export default function OrderDetail() {
 
               {/* دکمه‌های پایین */}
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 3 }}>
-                {order.carrier?.profile?.mobile && (
+                {canUpload && carrierMobile && (
                   <Button
                     variant="contained"
                     onClick={handleCallCollector}
                     sx={{
-                      backgroundColor: '#4caf50',
+                      backgroundColor: '#08784f',
                       color: '#fff',
                       borderRadius: '20px',
                       py: 2,
@@ -813,7 +840,7 @@ export default function OrderDetail() {
                       fontSize: '16px',
                       fontFamily: 'IranYekan, sans-serif',
                       '&:hover': {
-                        backgroundColor: '#45a049',
+                        backgroundColor: '#075c3e',
                       },
                     }}
                   >
@@ -866,7 +893,7 @@ export default function OrderDetail() {
           >
             {selectedImage && (
               <Image
-                src={`${BASE_URL}${selectedImage}`}
+                src={resolveMediaUrl(selectedImage)}
                 alt="تصویر بزرگ‌شده"
                 width={500}
                 height={500}

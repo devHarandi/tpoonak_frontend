@@ -22,11 +22,11 @@ const AnimatedVehicle = styled('img')({
 const ProgressBar = styled(LinearProgress)(({ theme }) => ({
   width: '100%',
   maxWidth: '300px',
-  height: '8px',
-  borderRadius: '4px',
-  backgroundColor: '#e5e7eb',
+  height: '7px',
+  borderRadius: '99px',
+  backgroundColor: '#dce8e1',
   '& .MuiLinearProgress-bar': {
-    background: 'linear-gradient(90deg, #00784a, #003087)',
+    backgroundColor: '#08784f',
   },
 }));
 
@@ -58,10 +58,10 @@ export default function Searching() {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'space-between',
-          minHeight: '100vh',
-          py: 8,
-          px: 0,
-          bgcolor: 'linear-gradient(180deg, #f3f4f6 0%, #e5e7eb 100%)',
+          minHeight: 'calc(100dvh - 68px)',
+          py: 5,
+          px: 2,
+          bgcolor: 'transparent',
           direction: 'rtl',
           textAlign: 'center',
           overflowX: 'hidden',
@@ -73,8 +73,8 @@ export default function Searching() {
           variant="h5"
           sx={{
             fontWeight: 'bold',
-            color: '#1f2937',
-            mb: 4,
+            color: '#17231e',
+            mb: 3,
             animation: 'fadeIn 1s ease-in',
             maxWidth: '90%',
             '@keyframes fadeIn': {
@@ -87,7 +87,7 @@ export default function Searching() {
         </Typography>
 
         {/* نوار پیشرفت */}
-        <ProgressBar variant="indeterminate" sx={{ mb: 8 }} />
+        <ProgressBar variant="indeterminate" sx={{ mb: 5 }} />
 
         {/* انیمیشن کامیون */}
         <Box
@@ -114,7 +114,7 @@ export default function Searching() {
             color: '#4b5563',
             maxWidth: '90%',
             mx: 'auto',
-            mb: 8,
+            mb: 5,
             lineHeight: 1.6,
             fontSize: '1.1rem',
           }}
@@ -128,10 +128,10 @@ export default function Searching() {
           href="/myorders"
           sx={{
             mt: 2,
-            background: 'linear-gradient(90deg, #00784a, #003087)',
+            backgroundColor: '#08784f',
             color: '#fff',
-            padding: '16px',
-            borderRadius: '12px',
+            padding: '13px 16px',
+            borderRadius: '14px',
             textTransform: 'none',
             fontFamily: 'IranYekan, sans-serif',
             fontWeight: 'bold',
@@ -140,9 +140,7 @@ export default function Searching() {
             width: '100%',
             maxWidth: '300px',
             '&:hover': {
-              background: 'linear-gradient(90deg, #003087, #005bb5)',
-              transform: 'scale(1.05)',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+              backgroundColor: '#075c3e',
             },
             '&:disabled': {
               backgroundColor: '#cccccc',

@@ -85,41 +85,42 @@ export default function OrderDetail() {
         className={styles.container}
         sx={{
           textAlign: 'right',
-          minHeight: '100%',
+          minHeight: 'calc(100dvh - 68px)',
           overflowY: 'auto',
-          pb: 10,
+          pb: 14,
+          pt: 2.5,
           display: 'flex',
           flexDirection: 'column',
-          bgcolor: '#f5f5f5',
+          bgcolor: 'transparent',
           direction: 'rtl',
         }}
       >
         <Header title="تیپاکس پونک - سفارشات من" />
 
         {/* Order Tracking Card */}
-        <Box sx={{ p: 1, flex: 1 }}>
+        <Box sx={{ px: 2, flex: 1 }}>
           <Card
             elevation={8}
             sx={{
-              borderRadius: 4,
-              background: 'linear-gradient(180deg, #E5E9ED 0%, #00784a 100%)',
-              color: 'white',
-              overflow: 'visible',
+              borderRadius: '22px',
+              background: '#fff',
+              color: '#17231e',
+              overflow: 'hidden',
             }}
           >
-            <CardContent sx={{ p: 1 }}>
+            <CardContent sx={{ p: { xs: 2.25, sm: 3 } }}>
               {/* Header Section */}
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 4 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2.5 }}>
                 <Box sx={{ textAlign: 'right' }}>
-                  <Typography variant="body2" sx={{ color: '#595959', mb: 0.5 }}>
+                  <Typography variant="body2" sx={{ color: '#65746c', mb: 0.5 }}>
                     مرسوله ارسالی
                   </Typography>
-                  <Typography variant="h6" sx={{ fontFamily: 'monospace', color: '#000000' }}>
+                  <Typography variant="h6" sx={{ fontFamily: 'monospace', color: '#17231e', fontWeight: 800 }}>
                     #p-J9189198
                   </Typography>
                 </Box>
                 <Box>
-                  <Typography sx={{ fontWeight: 500, mb: 0.5, fontSize: '14px', color: '#000000' }}>
+                  <Typography sx={{ fontWeight: 600, mb: 0.5, fontSize: '12px', color: '#65746c' }}>
                     تاریخ سوم خرداد ۱۴۰۴
                   </Typography>
                 </Box>
@@ -128,12 +129,13 @@ export default function OrderDetail() {
               {/* Progress Stepper */}
               <Box
                 sx={{
-                  mb: 6,
+                  mb: 3,
                   direction: 'rtl',
                   px: 2,
-                  backgroundColor: '#00784aED',
-                  p: '10px',
-                  borderRadius: '26px',
+                  backgroundColor: '#f4f8f5',
+                  p: '12px 8px',
+                  border: '1px solid #e1ece5',
+                  borderRadius: '18px',
                 }}
               >
                 <Stepper
@@ -146,7 +148,7 @@ export default function OrderDetail() {
                       position: 'relative',
                     },
                     '& .MuiStepLabel-label': {
-                      color: 'white',
+                      color: '#65746c',
                       fontWeight: 500,
                       fontSize: '0.6rem',
                       mt: 1.5,
@@ -155,11 +157,11 @@ export default function OrderDetail() {
                       lineHeight: 1.2,
                     },
                     '& .MuiStepLabel-label.Mui-completed': {
-                      color: 'white',
+                      color: '#08784f',
                       fontWeight: 600,
                     },
                     '& .MuiStepLabel-label.Mui-active': {
-                      color: 'white',
+                      color: '#08784f',
                       fontWeight: 600,
                     },
                     '& .MuiStep-root': {
@@ -330,15 +332,12 @@ export default function OrderDetail() {
                   <Typography sx={{ color: '#000', fontWeight: 'bold', fontSize: '14px' }}>
                     جمع‌آورنده: رضا محمدی
                   </Typography>
-                  <Typography sx={{ color: '#000', fontWeight: 'bold', fontSize: '14px' }}>
-                    موبایل: ۰۹۱۲۵۹۴۹۵۱۴
-                  </Typography>
                 </Box>
               </Box>
 
               {/* لیست عکس‌های بارگذاری‌شده */}
               <Box sx={{ mt: 3, textAlign: 'center' }}>
-                <Typography sx={{ color: 'white', fontWeight: 'bold', fontSize: '16px', mb: 2 }}>
+                <Typography sx={{ color: '#08784f', fontWeight: 800, fontSize: '16px', mb: 2 }}>
                   لیست عکس‌های بارگذاری‌شده
                 </Typography>
 

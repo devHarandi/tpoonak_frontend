@@ -1,163 +1,112 @@
 import { useRouter } from 'next/router';
-import { Box, Typography } from '@mui/material';
-import Image from 'next/image';
+import { Box, IconButton, Typography } from '@mui/material';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
+import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+
+type NavItem = {
+  label: string;
+  route: string;
+  icon: typeof HomeOutlinedIcon;
+  primary?: boolean;
+};
+
+const navItems: NavItem[] = [
+  { label: 'خانه', route: '/home', icon: HomeOutlinedIcon },
+  { label: 'سفارش‌ها', route: '/myorders', icon: ReceiptLongOutlinedIcon },
+  { label: 'ثبت مرسوله', route: '/createorder', icon: AddBoxRoundedIcon, primary: true },
+  { label: 'پروفایل', route: '/profile', icon: PersonOutlineIcon },
+];
 
 const CustomBottomNavigation = () => {
   const router = useRouter();
-  const currentRoute = router.pathname.split('/').pop() || 'home';
-
-  const handleNavigation = (route: string) => {
-    router.push(`/${route}`);
-  };
-
-  const navItems = [
-    { label: 'خانه', icon: '/images/home.svg', route: 'home', position: 'right' },
-    { label: 'سفارشات', icon: '/images/orders.svg', route: 'myorders', position: 'right' },
-    { label: 'ثبت مرسوله', icon: '/images/pack.svg', route: 'createorder', position: 'left' },
-    { label: 'پروفایل', icon: '/images/profile.svg', route: 'editprofile', position: 'left' },
-  ];
+  const currentPath = router.asPath.split('?')[0];
 
   return (
     <Box
+      component="nav"
+      aria-label="ناوبری اصلی"
       sx={{
         position: 'fixed',
-        bottom: 0,
-        left: 0,
-        width: '100%',
-        height: '80px',
-        zIndex: 1000,
-        display: 'flex',
-        justifyContent: 'center',
+        bottom: 'max(12px, env(safe-area-inset-bottom))',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: 'min(calc(100% - 24px), 600px)',
+        zIndex: 1200,
+        direction: 'rtl',
       }}
     >
       <Box
         sx={{
-          width: '95%',
-          height: '70px',
-          display: 'flex',
-          justifyContent: 'space-between',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(4, 1fr)',
           alignItems: 'center',
-          backgroundColor: '#00784a',
-          borderRadius: '16px',
-          mx: '10px',
-          padding: '0 20px',
+          gap: 0.5,
+          minHeight: 70,
+          px: 1,
+          py: 0.75,
+          border: '1px solid rgba(8,120,79,0.13)',
+          borderRadius: '22px',
+          background: 'rgba(255,255,255,0.94)',
+          boxShadow: '0 16px 36px rgba(22, 50, 38, 0.16)',
+          backdropFilter: 'blur(18px)',
         }}
       >
-        {/* آیتم‌های سمت چپ */}
-        <Box sx={{ display: 'flex', gap: '40px', direction: 'rtl' }}>
-          {navItems
-            .filter((item) => item.position === 'left')
-            .map((item) => (
+        {navItems.map(({ label, route, icon: Icon, primary }) => {
+          const selected = currentPath === route || currentPath.startsWith(`${route}/`);
+          return (
+            <IconButton
+              key={route}
+              onClick={() => router.push(route)}
+              aria-label={label}
+              aria-current={selected ? 'page' : undefined}
+              sx={{
+                minWidth: 0,
+                width: '100%',
+                height: 58,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 0.25,
+                color: selected ? '#075c3e' : '#87958d',
+                borderRadius: '16px',
+                '&:hover': { background: '#f3f8f5' },
+              }}
+            >
               <Box
-                key={item.route}
-                onClick={() => handleNavigation(item.route)}
                 sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                  color: currentRoute === item.route ? '#fff' : '#b0b0b0',
-                  transition: 'color 0.3s',
+                  display: 'grid',
+                  placeItems: 'center',
+                  width: primary ? 42 : 30,
+                  height: primary ? 42 : 30,
+                  borderRadius: primary ? '14px' : '10px',
+                  color: primary ? '#17231e' : 'currentColor',
+                  background: primary ? '#f4c400' : selected ? '#e6f4ee' : 'transparent',
+                  boxShadow: primary ? '0 6px 14px rgba(244,196,0,0.28)' : 'none',
+                  transform: primary ? 'translateY(-12px)' : 'none',
                 }}
               >
-                <Image
-                  src={item.icon}
-                  alt={item.label}
-                  width={24}
-                  height={24}
-                  style={{ marginBottom: '4px' }}
-                />
-                <Typography sx={{ fontSize: '12px', fontWeight: currentRoute === item.route ? 'bold' : 'normal' }}>
-                  {item.label}
-                </Typography>
+                <Icon sx={{ fontSize: primary ? 25 : 23 }} />
               </Box>
-            ))}
-        </Box>
-
-        {/* لوگوی مرکزی */}
-        <Box
-          sx={{
-            width: '60px',
-            height: '60px',
-            overflow: 'hidden',
-            position: 'absolute',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            top: '-20px',
-            zIndex: 1,
-            backgroundColor: '#f5f5f5',
-            borderRadius: '50%',
-          }}
-        >
-          <Image
-            src="/images/logo.svg"
-            alt="لوگوی تیپاکس پونک"
-            width={60}
-            height={55}
-            style={{
-              borderRadius: '50%',
-              position: 'absolute',
-              animation: 'spin 1s linear infinite',
-              animationDelay: '5s',
-              animationIterationCount: 1,
-              animationFillMode: 'forwards',
-            }}
-          />
-        </Box>
-
-        {/* آیتم‌های سمت راست */}
-        <Box sx={{ display: 'flex', gap: '40px', direction: 'rtl' }}>
-          {navItems
-            .filter((item) => item.position === 'right')
-            .map((item) => (
-              <Box
-                key={item.route}
-                onClick={() => handleNavigation(item.route)}
+              <Typography
                 sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                  color: currentRoute === item.route ? '#fff' : '#b0b0b0',
-                  transition: 'color 0.3s',
+                  mt: primary ? -1 : 0,
+                  color: 'inherit',
+                  fontFamily: 'iranYekan, sans-serif',
+                  fontSize: 10,
+                  fontWeight: selected || primary ? 800 : 600,
+                  lineHeight: 1.4,
+                  whiteSpace: 'nowrap',
                 }}
               >
-                <Image
-                  src={item.icon}
-                  alt={item.label}
-                  width={24}
-                  height={24}
-                  style={{ marginBottom: '4px' }}
-                />
-                <Typography sx={{ fontSize: '12px', fontWeight: currentRoute === item.route ? 'bold' : 'normal' }}>
-                  {item.label}
-                </Typography>
-              </Box>
-            ))}
-        </Box>
+                {label}
+              </Typography>
+            </IconButton>
+          );
+        })}
       </Box>
     </Box>
   );
 };
-
-// افزودن انیمیشن CSS
-const styles = `
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-`;
-
-// افزودن استایل به سند
-if (typeof document !== 'undefined') {
-  const styleSheet = document.createElement('style');
-  styleSheet.type = 'text/css';
-  styleSheet.innerText = styles;
-  document.head.appendChild(styleSheet);
-}
 
 export default CustomBottomNavigation;

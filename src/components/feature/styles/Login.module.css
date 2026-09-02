@@ -1,48 +1,82 @@
-/* components/feature/styles/Login.module.css */
 .container {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: linear-gradient(180deg, #E5E9ED 0%, #00784a 100%);
+  align-items: stretch;
+  gap: 22px;
+  min-height: 100dvh;
+  padding: 28px 20px 36px;
+  direction: rtl;
+  background:
+    radial-gradient(circle at 90% 0%, rgba(244, 196, 0, 0.18), transparent 15rem),
+    linear-gradient(180deg, #f5faf7 0%, #eaf3ee 100%);
 }
 
 .header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 32px;
-  margin-bottom: 40px;
+  gap: 10px;
+  margin: 0 auto 4px;
+  text-align: center;
 }
 
 .icon {
-  /* استایل‌های اضافی برای آیکون */
+  width: 92px;
+  height: 70px;
+  object-fit: contain;
+  border-radius: 20px;
 }
 
 .title {
-  color: #ffffff;
+  color: #075c3e !important;
+  font-size: 20px !important;
+  letter-spacing: -0.2px;
 }
 
 .loginBox {
-  background-color: #afb5bd;
-  border-radius: 12px;
-  padding: 24px;
   width: 100%;
-  max-width: 400px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 24px 20px 20px;
+  border: 1px solid #dce9e1;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 20px 44px rgba(21, 67, 47, 0.1);
+  text-align: right;
+}
+
+.loginBox :global(.MuiTypography-root) {
+  font-family: 'iranYekan', sans-serif;
+}
+
+.loginBox :global(.MuiTextField-root) {
+  margin-top: 8px;
+}
+
+.loginBox :global(.MuiInputBase-root) {
+  min-height: 54px;
 }
 
 .codeInputs {
   display: flex;
-  justify-content: space-between;
-  gap: 8px; /* فاصله بین ورودی‌ها */
+  justify-content: center;
+  direction: ltr;
+  gap: 8px;
   width: 100%;
-  margin-bottom: 24px; /* فاصله از دکمه */
+  margin: 8px 0 24px;
 }
 
 .submitButton {
-  /* استایل‌های اضافی برای دکمه */
+  width: 100%;
+  min-height: 52px;
+  margin-top: 28px;
+  border-radius: 15px !important;
+  background: #08784f !important;
+  color: #fff !important;
+  font-size: 15px !important;
+}
+
+.submitButton:hover {
+  background: #075c3e !important;
 }

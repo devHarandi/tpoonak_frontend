@@ -59,12 +59,12 @@ export default function Rules() {
     <AppFrame>
       <Box sx={{
         textAlign: 'right',
-        minHeight: '100%',
+        minHeight: 'calc(100dvh - 68px)',
         overflowY: 'auto',
         pb: 14,
         display: 'flex',
         flexDirection: 'column',
-        bgcolor: '#f5f5f5',
+        bgcolor: 'transparent',
         direction: 'rtl',
         pt: 2,
         pr: 2,
@@ -75,7 +75,7 @@ export default function Rules() {
             variant="h4" 
             sx={{ 
               fontFamily: 'IranYekan, sans-serif',
-              color: '#00784a',
+              color: '#08784f',
               fontWeight: 'bold',
               textAlign: 'right',
               mb: 2,
@@ -99,10 +99,9 @@ export default function Rules() {
           </Typography>
 
           <Card sx={{ 
-            p: 4, 
-            borderRadius: '16px', 
-            boxShadow: 3, 
-            backgroundColor: '#FBFBFB' 
+              p: { xs: 2, sm: 4 },
+              borderRadius: '20px',
+              backgroundColor: '#fff'
           }}>
             <CardContent sx={{ p: 0 }}>
               {rules.map((rule, index) => (
@@ -111,7 +110,7 @@ export default function Rules() {
                     variant="h6" 
                     sx={{ 
                       fontFamily: 'IranYekan, sans-serif', 
-                      color: '#00784a', 
+                      color: '#08784f',
                       fontWeight: 600, 
                       mb: 1 
                     }}
@@ -139,14 +138,14 @@ export default function Rules() {
                   mt: 3,
                   borderRadius: '8px',
                   padding: '10px 10px',
-                  backgroundColor: '#00784a',
+                  backgroundColor: '#08784f',
                   color: '#ffffff',
                   fontFamily: 'IranYekan, sans-serif',
                   fontWeight: 'bold',
                   fontSize: '18px',
                   textTransform: 'none',
                   '&:hover': {
-                    backgroundColor: '#005f3a',
+                    backgroundColor: '#075c3e',
                   },
                   '&:disabled': {
                     backgroundColor: '#b3d1c2',

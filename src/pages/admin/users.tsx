@@ -19,6 +19,10 @@ import {
   Snackbar,
   Alert,
   TextField,
+  FormLabel,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
 } from '@mui/material';
 import { Add, Person, Phone, AccountBalance, Payment, Receipt } from '@mui/icons-material';
 import Header from '@/components/common/Header';
@@ -26,6 +30,7 @@ import CustomBottomNavigation from '@/components/common/CustomBottomNavigation';
 import AppFrame from '@/components/common/AppFrame';
 import { getUsers, getRoles, createUser, assignRole, removeRole, settleBalance } from '@/services/user';
 import { User, Role, CreateUserRequest, AssignRoleRequest, RemoveRoleRequest, SettleBalanceRequest } from '@/types/user';
+import { CustomerType } from '@/types/auth';
 import PersianDate from 'persian-date';
 
 // تابع برای تبدیل تاریخ به شمسی
@@ -47,7 +52,14 @@ export default function UserManagement() {
   const [openRemoveDialog, setOpenRemoveDialog] = useState<boolean>(false);
   const [openCreateDialog, setOpenCreateDialog] = useState<boolean>(false);
   const [openSettleDialog, setOpenSettleDialog] = useState<boolean>(false);
-  const [newUser, setNewUser] = useState<CreateUserRequest>({ mobile: '', first_name: '', last_name: '', role_ids: [] });
+  const [newUser, setNewUser] = useState<CreateUserRequest>({
+    mobile: '',
+    first_name: '',
+    last_name: '',
+    customer_type: 'individual',
+    company_name: '',
+    role_ids: [],
+  });
   const [settleData, setSettleData] = useState<SettleBalanceRequest>({ user_id: 0, role_id: 0, amount: 0, description: '' });
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' });
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -95,7 +107,14 @@ export default function UserManagement() {
   };
 
   const handleOpenCreateDialog = () => {
-    setNewUser({ mobile: '', first_name: '', last_name: '', role_ids: [] });
+    setNewUser({
+      mobile: '',
+      first_name: '',
+      last_name: '',
+      customer_type: 'individual',
+      company_name: '',
+      role_ids: [],
+    });
     setOpenCreateDialog(true);
   };
 
@@ -126,7 +145,14 @@ export default function UserManagement() {
 
   const handleCloseCreateDialog = () => {
     setOpenCreateDialog(false);
-    setNewUser({ mobile: '', first_name: '', last_name: '', role_ids: [] });
+    setNewUser({
+      mobile: '',
+      first_name: '',
+      last_name: '',
+      customer_type: 'individual',
+      company_name: '',
+      role_ids: [],
+    });
   };
 
   const handleCloseSettleDialog = () => {
@@ -194,6 +220,11 @@ export default function UserManagement() {
   const handleCreateUser = async () => {
     if (!newUser.mobile || !newUser.first_name || !newUser.last_name || newUser.role_ids.length === 0) {
       setSnackbar({ open: true, message: 'لطفاً تمام فیلدها را پر کنید', severity: 'error' });
+      return;
+    }
+
+    if (newUser.customer_type === 'company' && !newUser.company_name?.trim()) {
+      setSnackbar({ open: true, message: 'برای حساب شرکتی وارد کردن نام شرکت الزامی است', severity: 'error' });
       return;
     }
 
@@ -278,23 +309,23 @@ export default function UserManagement() {
       
       <Box sx={{
           textAlign: 'right',
-          minHeight: '100%',
+          minHeight: 'calc(100dvh - 68px)',
           overflowY: 'auto',
-          pb: 10,
+          pb: 14,
           pr:2,
           pl:2,
-          pt:2,
+          pt:2.5,
           display: 'flex',
           flexDirection: 'column',
-          bgcolor: '#f5f5f5',
+          bgcolor: 'transparent',
           direction: 'rtl',
         }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2.5, p: 1.5, bgcolor: '#fff', border: '1px solid #e1eae5', borderRadius: '16px', gap: 1 }}>
           <Typography 
             variant="h6" 
             sx={{ 
               fontFamily: 'IranYekan, sans-serif',
-              color: '#00784a',
+              color: '#08784f',
               fontWeight: 'bold',
               textAlign: 'right'
             }}
@@ -305,11 +336,11 @@ export default function UserManagement() {
             onClick={handleOpenCreateDialog}
             variant="contained"
             sx={{
-              backgroundColor: '#00784a',
+              backgroundColor: '#08784f',
               color: '#fff',
               fontFamily: 'IranYekan, sans-serif',
-              borderRadius: '8px',
-              '&:hover': { backgroundColor: '#003087' }
+              borderRadius: '12px',
+              '&:hover': { backgroundColor: '#075c3e' }
             }}
           >
             افزودن کاربر
@@ -326,11 +357,11 @@ export default function UserManagement() {
               key={user.id}
               elevation={8}
               sx={{
-                borderRadius: 4,
-                background: 'linear-gradient(180deg, #E5E9ED 0%, #00784a 100%)',
-                color: 'white',
-                mb: 3,
-                overflow: 'visible',
+                borderRadius: '22px',
+                background: '#fff',
+                color: '#17231e',
+                mb: 1.5,
+                overflow: 'hidden',
               }}
             >
               <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
@@ -654,6 +685,51 @@ export default function UserManagement() {
             sx={{ fontFamily: 'IranYekan, sans-serif', textAlign: 'right' }}
             InputProps={{ style: { textAlign: 'right' } }}
           />
+          <FormControl component="fieldset" fullWidth>
+            <FormLabel
+              component="legend"
+              sx={{ fontFamily: 'IranYekan, sans-serif', color: '#00784a', mb: 0.5 }}
+            >
+              نوع حساب
+            </FormLabel>
+            <RadioGroup
+              row
+              value={newUser.customer_type || 'individual'}
+              onChange={(e) => {
+                const customerType = e.target.value as CustomerType;
+                setNewUser({
+                  ...newUser,
+                  customer_type: customerType,
+                  company_name: customerType === 'company' ? newUser.company_name || '' : '',
+                });
+              }}
+              sx={{ gap: 1, flexWrap: 'wrap' }}
+            >
+              <FormControlLabel
+                value="individual"
+                control={<Radio sx={{ color: '#00784a', '&.Mui-checked': { color: '#00784a' } }} />}
+                label="کاربر خانگی"
+                sx={{ fontFamily: 'IranYekan, sans-serif', m: 0 }}
+              />
+              <FormControlLabel
+                value="company"
+                control={<Radio sx={{ color: '#00784a', '&.Mui-checked': { color: '#00784a' } }} />}
+                label="شرکت"
+                sx={{ fontFamily: 'IranYekan, sans-serif', m: 0 }}
+              />
+            </RadioGroup>
+          </FormControl>
+          {newUser.customer_type === 'company' && (
+            <TextField
+              label="نام شرکت"
+              required
+              value={newUser.company_name || ''}
+              onChange={(e) => setNewUser({ ...newUser, company_name: e.target.value })}
+              fullWidth
+              sx={{ fontFamily: 'IranYekan, sans-serif', textAlign: 'right' }}
+              InputProps={{ style: { textAlign: 'right' } }}
+            />
+          )}
           <FormControl fullWidth>
             <InputLabel sx={{ fontFamily: 'IranYekan, sans-serif', color: '#00784a' }}>نقش‌ها</InputLabel>
             <Select
@@ -699,7 +775,13 @@ export default function UserManagement() {
           <Button 
             onClick={handleCreateUser}
             variant="contained"
-            disabled={!newUser.mobile || !newUser.first_name || !newUser.last_name || newUser.role_ids.length === 0}
+            disabled={
+              !newUser.mobile ||
+              !newUser.first_name ||
+              !newUser.last_name ||
+              newUser.role_ids.length === 0 ||
+              (newUser.customer_type === 'company' && !newUser.company_name?.trim())
+            }
             sx={{ 
               fontFamily: 'IranYekan, sans-serif',
               backgroundColor: '#00784a',

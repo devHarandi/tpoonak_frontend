@@ -1,4 +1,4 @@
-/* styles/global.css */
+/* Shared visual foundation for the RTL PWA. */
 @font-face {
   font-family: 'iranYekan';
   src: url('/fonts/iranYekan.eot') format('eot'),
@@ -9,7 +9,69 @@
   font-style: normal;
   font-display: swap;
 }
-.raychat_frame
-{
-  bottom:64px !important;
+
+:root {
+  --tipax-green: #08784f;
+  --tipax-green-dark: #075c3e;
+  --tipax-green-soft: #e6f4ee;
+  --tipax-yellow: #f4c400;
+  --ink: #17231e;
+  --muted: #65746c;
+  --line: #e1eae5;
+  --surface: #ffffff;
+  --page: #eef3f0;
+}
+
+html,
+body,
+#__next {
+  min-height: 100%;
+}
+
+html {
+  background: var(--page);
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 0 0, rgba(8, 120, 79, 0.06), transparent 30rem),
+    var(--page);
+  font-family: 'iranYekan', 'Helvetica', 'Arial', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+/* Keep legacy screen content, but make platform surfaces consistent. */
+.MuiCard-root {
+  background-color: var(--surface) !important;
+  background-image: none !important;
+  box-shadow: 0 10px 30px rgba(22, 50, 38, 0.06) !important;
+}
+
+.MuiAlert-root {
+  border-radius: 14px;
+  font-family: 'iranYekan', sans-serif;
+}
+
+.raychat_frame {
+  bottom: 78px !important;
 }
